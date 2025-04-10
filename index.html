@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Советские открытки</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 0; background: #f8f8f8; }
+    header { background: #800000; color: white; padding: 1em; text-align: center; }
+    main { padding: 2em; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1em; }
+    .card { background: white; padding: 1em; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .card img { max-width: 100%; border-radius: 4px; }
+    .card h3 { margin: 0.5em 0 0.2em; }
+    .card p { margin: 0.2em 0; font-size: 0.9em; }
+    .card button { margin-top: 0.5em; background: #800000; color: white; border: none; padding: 0.5em; cursor: pointer; border-radius: 4px; }
+    .card button:hover { background: #a00000; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Магазин советских открыток</h1>
+  </header>
+  <main id="product-list">
+    <!-- Товары будут загружаться сюда -->
+  </main>
+
+  <script>
+    async function loadProducts() {
+      const response = await fetch('data/products.json');
+      const products = await response.json();
+      const container = document.getElementById('product-list');
+      products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="img/${product.image}" alt="${product.name}" />
+          <h3>${product.name}</h3>
+          <p>${product.description}</p>
+          <p><strong>${product.price} руб.</strong></p>
+          <button onclick="addToCart('${product.name}')">В корзину</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function addToCart(name) {
+      alert(`Товар \"${name}\" добавлен в корзину.`);
+    }
+
+    loadProducts();
+  </script>
+</body>
+</html>
+
+<!-- Пример содержимого data/products.json:
+[
+  {
+    "name": "Открытка: Новый год 1982",
+    "description": "Советская новогодняя открытка с ёлкой и Дедом Морозом.",
+    "price": 50,
+    "image": "newyear1982.jpg"
+  },
+  {
+    "name": "Открытка: 8 марта 1975",
+    "description": "Цветочная открытка ко дню 8 марта с надписью 'Поздравляем!'.",
+    "price": 40,
+    "image": "march8_1975.jpg"
+  },
+  {
+    "name": "Открытка: 1 мая 1980",
+    "description": "Открытка с праздничной демонстрацией и флагами СССР.",
+    "price": 60,
+    "image": "may1_1980.jpg"
+  }
+]
+-->
