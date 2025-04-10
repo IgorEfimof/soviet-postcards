@@ -7,7 +7,20 @@
   <style>
     body { font-family: sans-serif; margin: 0; padding: 0; background: #f8f8f8; }
     header { background: #800000; color: white; padding: 1em; text-align: center; position: relative; }
-    header button { position: absolute; right: 1em; top: 1em; background: #a00000; border: none; color: white; padding: 0.5em 1em; cursor: pointer; border-radius: 4px; }
+    .cart-icon-button {
+      position: absolute;
+      right: 1em;
+      top: 1em;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5em;
+      color: white;
+      transition: transform 0.2s;
+    }
+    .cart-icon-button:hover {
+      transform: scale(1.2);
+    }
     main { padding: 2em; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1em; }
     .card { background: white; padding: 1em; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: 0.2s; }
     .card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.15); transform: translateY(-2px); }
@@ -38,7 +51,9 @@
 <body>
   <header>
     <h1>Магазин советских открыток</h1>
-    <button onclick="showCart()">🛒 Корзина</button>
+    <button class="cart-icon-button" onclick="showCart()" title="Корзина">
+      🛒
+    </button>
   </header>
   <main id="product-list"></main>
 
