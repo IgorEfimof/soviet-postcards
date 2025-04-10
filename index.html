@@ -47,7 +47,9 @@
 
     #cart-content h2 { margin-top: 0; font-size: 1.5em; text-align: center; color: #800000; }
     #cart-content ul { padding-left: 0; list-style: none; margin: 1em 0; }
-    #cart-content li { margin-bottom: 0.8em; background: #fafafa; padding: 0.8em 1em; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    #cart-content li { margin-bottom: 0.8em; background: #fafafa; padding: 0.8em 1em; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); gap: 0.5em; }
+    .cart-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+    .cart-info { flex: 1; }
     #cart-content .remove { background: none; color: #a00000; border: none; cursor: pointer; font-size: 1.2em; }
 
     #cart-footer { margin-top: 1em; text-align: center; }
@@ -100,16 +102,16 @@
           <h3>${product.name}</h3>
           <p>${product.description}</p>
           <p><strong>${product.price} руб.</strong></p>
-          <button onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
+          <button onclick="addToCart('${product.name}', ${product.price}, '${product.image}')">В корзину</button>
         `;
         container.appendChild(card);
       });
       updateCartCount();
     }
 
-    function addToCart(name, price) {
+    function addToCart(name, price, image) {
       const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      cart.push({ name, price });
+      cart.push({ name, price, image });
       localStorage.setItem('cart', JSON.stringify(cart));
       alert(`Товар \"${name}\" добавлен в корзину.`);
       updateCartCount();
@@ -139,7 +141,10 @@
         cart.forEach((item, index) => {
           const li = document.createElement('li');
           li.innerHTML = `
-            ${item.name} — ${item.price} руб.
+            <img src="img/${item.image}" class="cart-thumb" alt="${item.name}" />
+            <div class="cart-info">
+              ${item.name}<br>${item.price} руб.
+            </div>
             <button class="remove" onclick="removeFromCart(${index})">✕</button>
           `;
           total += item.price;
@@ -176,7 +181,7 @@
         alert('Корзина пуста');
         return;
       }
-      const message = encodeURIComponent(cart.map(p => `• ${p.name} — ${p.price} руб.`).join('\n'));
+      const message = cart.map(p => `• ${p.name} — ${p.price} руб.%0A📷 https://<твой-сайт>/img/${p.image}`).join('%0A');
       const telegramLink = `https://t.me/share/url?url=&text=Хочу заказать открытки:%0A${message}`;
       window.open(telegramLink, '_blank');
     }
