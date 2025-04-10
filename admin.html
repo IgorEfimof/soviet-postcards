@@ -1,81 +1,111 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Админка — открытки</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Советские открытки</title>
   <style>
-    body { font-family: sans-serif; padding: 2em; background: #f2f2f2; }
-    h1 { color: #800000; }
-    label { display: block; margin-top: 1em; }
-    input, textarea { width: 100%; padding: 0.5em; margin-top: 0.2em; }
-    button { margin-top: 1em; background: #800000; color: white; border: none; padding: 0.5em 1em; cursor: pointer; }
-    .preview { margin-top: 2em; background: white; padding: 1em; border-radius: 8px; }
-    #admin-panel { display: none; }
+    body { font-family: sans-serif; margin: 0; padding: 0; background: #f8f8f8; }
+    header { background: #800000; color: white; padding: 1em; text-align: center; position: relative; }
+    header button { position: absolute; right: 1em; top: 1em; background: #a00000; border: none; color: white; padding: 0.5em 1em; cursor: pointer; border-radius: 4px; }
+    main { padding: 2em; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1em; }
+    .card { background: white; padding: 1em; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .card img { max-width: 100%; border-radius: 4px; }
+    .card h3 { margin: 0.5em 0 0.2em; }
+    .card p { margin: 0.2em 0; font-size: 0.9em; }
+    .card button { margin-top: 0.5em; background: #800000; color: white; border: none; padding: 0.5em; cursor: pointer; border-radius: 4px; }
+    .card button:hover { background: #a00000; }
+    #cart-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+    #cart-content { background: white; padding: 2em; border-radius: 8px; width: 90%; max-width: 500px; }
+    #cart-content h2 { margin-top: 0; }
+    #cart-content ul { padding-left: 1em; }
+    #cart-content button { background: #800000; color: white; padding: 0.5em 1em; border: none; margin-top: 1em; cursor: pointer; border-radius: 4px; margin-right: 0.5em; }
   </style>
 </head>
 <body>
-  <div id="login">
-    <h1>Вход в админку</h1>
-    <label>Пароль
-      <input type="password" id="admin-password">
-    </label>
-    <button onclick="checkPassword()">Войти</button>
-  </div>
+  <header>
+    <h1>Магазин советских открыток</h1>
+    <button onclick="showCart()">🛒 Корзина</button>
+  </header>
+  <main id="product-list">
+    <!-- Товары будут загружаться сюда -->
+  </main>
 
-  <div id="admin-panel">
-    <h1>Добавить открытку</h1>
-    <form id="product-form">
-      <label>Название
-        <input type="text" id="name" required>
-      </label>
-      <label>Описание
-        <textarea id="description" required></textarea>
-      </label>
-      <label>Цена
-        <input type="number" id="price" required>
-      </label>
-      <label>Имя файла изображения (например, newyear1982.jpg)
-        <input type="text" id="image" required>
-      </label>
-      <button type="submit">Добавить</button>
-    </form>
-
-    <div class="preview">
-      <h2>JSON результат</h2>
-      <pre id="json-output">[]</pre>
+  <div id="cart-modal" onclick="hideCart(event)">
+    <div id="cart-content">
+      <h2>Корзина</h2>
+      <ul id="cart-items"></ul>
+      <button onclick="clearCart()">Очистить корзину</button>
+      <button onclick="orderNow()">Оформить заказ</button>
     </div>
   </div>
 
   <script>
-    const form = document.getElementById('product-form');
-    const output = document.getElementById('json-output');
-    const adminPanel = document.getElementById('admin-panel');
-    const login = document.getElementById('login');
-    let products = [];
+    async function loadProducts() {
+      const response = await fetch('data/products.json');
+      const products = await response.json();
+      const container = document.getElementById('product-list');
+      products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="img/${product.image}" alt="${product.name}" />
+          <h3>${product.name}</h3>
+          <p>${product.description}</p>
+          <p><strong>${product.price} руб.</strong></p>
+          <button onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
+        `;
+        container.appendChild(card);
+      });
+    }
 
-    function checkPassword() {
-      const input = document.getElementById('admin-password').value;
-      const correctPassword = "secret123"; // замени на свой пароль
-      if (input === correctPassword) {
-        login.style.display = 'none';
-        adminPanel.style.display = 'block';
+    function addToCart(name, price) {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      cart.push({ name, price });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert(`Товар \"${name}\" добавлен в корзину.`);
+    }
+
+    function showCart() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const list = document.getElementById('cart-items');
+      list.innerHTML = '';
+      if (cart.length === 0) {
+        list.innerHTML = '<li>Корзина пуста</li>';
       } else {
-        alert('Неверный пароль');
+        cart.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = `${item.name} — ${item.price} руб.`;
+          list.appendChild(li);
+        });
+      }
+      document.getElementById('cart-modal').style.display = 'flex';
+    }
+
+    function hideCart(event) {
+      if (event.target.id === 'cart-modal') {
+        document.getElementById('cart-modal').style.display = 'none';
       }
     }
 
-    form.onsubmit = function(e) {
-      e.preventDefault();
-      const product = {
-        name: document.getElementById('name').value,
-        description: document.getElementById('description').value,
-        price: parseInt(document.getElementById('price').value),
-        image: document.getElementById('image').value
-      };
-      products.push(product);
-      output.textContent = JSON.stringify(products, null, 2);
-      form.reset();
-    };
+    function clearCart() {
+      localStorage.removeItem('cart');
+      showCart();
+    }
+
+    function orderNow() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      if (cart.length === 0) {
+        alert('Корзина пуста');
+        return;
+      }
+      const message = encodeURIComponent(cart.map(p => `• ${p.name} — ${p.price} руб.`).join('\n'));
+      const telegramLink = `https://t.me/share/url?url=&text=Хочу заказать открытки:%0A${message}`;
+      window.open(telegramLink, '_blank');
+    }
+
+    loadProducts();
   </script>
 </body>
 </html>
+
