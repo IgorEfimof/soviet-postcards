@@ -186,7 +186,7 @@
       const chatId = '5059431264';
       const apiUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
-      const message = cart.map(p => `• ${p.name} — ${p.price} руб.%0A📷 https://<твой-сайт>/img/${p.image}`).join('%0A');
+      const message = cart.map(p => `• ${p.name} — ${p.price} руб.%0A📷 https://igorefimof.github.io/soviet-postcards/img/${p.image}`).join('%0A');
       const fullMessage = `Новый заказ:%0A${message}`;
 
       try {
