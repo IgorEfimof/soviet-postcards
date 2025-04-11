@@ -76,10 +76,11 @@
       <h2>Корзина</h2>
       <ul id="cart-items"></ul>
       <div id="cart-footer">
-        <p><strong>Итого: <span id="cart-total">0</span> руб.</strong></p>
-        <button onclick="clearCart()">Очистить корзину</button>
-        <button onclick="orderNow()">Оформить заказ</button>
-      </div>
+  <p><strong>Итого: <span id="cart-total">0</span> руб.</strong></p>
+  <input type="text" id="user-name" placeholder="Ваше имя" style="margin-bottom: 10px; padding: 0.5em; width: 95%; border: 1px solid #ccc; border-radius: 4px;" />
+  <button onclick="clearCart()">Очистить корзину</button>
+  <button onclick="orderNow()">Оформить заказ</button>
+</div>
     </div>
   </div>
 
@@ -176,50 +177,56 @@
     }
 
     async function orderNow() {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      if (cart.length === 0) {
-        alert('Корзина пуста');
-        return;
-      }
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  if (cart.length === 0) {
+    alert('Корзина пуста');
+    return;
+  }
 
-      const botToken = '7549512928:AAG4ChQzTDH9c5zzo2D1KofIKtekwqNM4bg';
-      const chatId = '5059431264';
-      const baseImgUrl = 'https://igorefimof.github.io/soviet-postcards/img/';
-      const total = cart.reduce((sum, item) => sum + item.price, 0);
+  const userName = document.getElementById('user-name').value.trim();
+  if (!userName) {
+    alert('Пожалуйста, укажите ваше имя.');
+    return;
+  }
 
-      // Отправляем каждое фото товара отдельно с подписью
-      for (const item of cart) {
-        const imageUrl = baseImgUrl + item.image;
-        const caption = `${item.name} — ${item.price} руб.`;
+  const botToken = '7549512928:AAG4ChQzTDH9c5zzo2D1KofIKtekwqNM4bg';
+  const chatId = '5059431264';
+  const baseImgUrl = 'https://igorefimof.github.io/soviet-postcards/img/';
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
 
-        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            photo: imageUrl,
-            caption: caption,
-            parse_mode: 'HTML'
-          })
-        });
-      }
+  // Отправляем каждое фото товара отдельно с подписью
+  for (const item of cart) {
+    const imageUrl = baseImgUrl + item.image;
+    const caption = `${item.name} — ${item.price} руб.`;
 
-      // Отправляем финальное сообщение с общей суммой
-      const summaryMessage = `🛒 Новый заказ!\nТоваров: ${cart.length}\nИтого: ${total} руб.`;
+    await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        photo: imageUrl,
+        caption: caption,
+        parse_mode: 'HTML'
+      })
+    });
+  }
 
-      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: summaryMessage,
-          parse_mode: 'HTML'
-        })
-      });
+  // Отправляем финальное сообщение с именем пользователя и общей суммой
+  const summaryMessage = `🛒 Новый заказ от ${userName}!\nТоваров: ${cart.length}\nИтого: ${total} руб.`;
 
-      alert('Ваш заказ успешно отправлен!');
-      clearCart();
-    }
+  await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: summaryMessage,
+      parse_mode: 'HTML'
+    })
+  });
+
+  alert('Ваш заказ успешно отправлен!');
+  clearCart();
+}
 
     loadProducts();
   </script>
