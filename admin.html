@@ -62,7 +62,7 @@
 
     function checkPassword() {
       const input = document.getElementById('admin-password').value;
-      const correctPassword = "secret123"; // замени на свой пароль
+      const correctPassword = "secret123"; // Замени на свой пароль
       if (input === correctPassword) {
         login.style.display = 'none';
         adminPanel.style.display = 'block';
@@ -72,7 +72,7 @@
       }
     }
 
-    form.onsubmit = function(e) {
+    form.onsubmit = async function(e) {
       e.preventDefault();
       const product = {
         name: document.getElementById('name').value,
@@ -89,6 +89,7 @@
       }
       form.reset();
       renderList();
+      await saveToServer(); // Сохранение данных на сервер
     };
 
     function renderList() {
@@ -109,6 +110,23 @@
       output.textContent = JSON.stringify(products, null, 2);
     }
 
+    async function saveToServer() {
+      try {
+        const response = await fetch('/save-products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(products)
+        });
+        if (!response.ok) {
+          throw new Error('Ошибка при сохранении данных на сервер');
+        }
+        alert('Данные успешно сохранены');
+      } catch (error) {
+        console.error(error);
+        alert('Не удалось сохранить данные');
+      }
+    }
+
     function editItem(index) {
       const p = products[index];
       document.getElementById('name').value = p.name;
@@ -123,6 +141,7 @@
       if (confirm('Удалить эту открытку?')) {
         products.splice(index, 1);
         renderList();
+        saveToServer(); // Сохранение изменений после удаления
       }
     }
   </script>
