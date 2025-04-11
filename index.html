@@ -122,15 +122,42 @@
       showCart();
     }
 
-    function orderNow() {
+    async function orderNow() {
       const cart = JSON.parse(localStorage.getItem('cart') || '[]');
       if (cart.length === 0) {
         alert('Корзина пуста');
         return;
       }
+
+      const botToken = '7549512928:AAG4ChQzTDH9c5zzo2D1KoFIKtekwqNM4bg'; // Ваш токен
+      const chatId = '@IgEfR'; // Ваш chat_id или название канала
+      const apiUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+      // Формируем сообщение из корзины
       const message = cart.map(p => `• ${p.name} — ${p.price} руб.%0A📷 https://<твой-сайт>/img/${p.image}`).join('%0A');
-      const telegramLink = `https://t.me/IgEfR?text=Хочу заказать открытки:%0A${message}`;
-      window.open(telegramLink, '_blank');
+      const fullMessage = `Новый заказ:%0A${message}`;
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: fullMessage,
+            parse_mode: 'HTML'
+          })
+        });
+
+        if (response.ok) {
+          alert('Ваш заказ успешно отправлен!');
+          clearCart();
+        } else {
+          alert('Ошибка при отправке заказа.');
+        }
+      } catch (error) {
+        console.error('Ошибка:', error);
+        alert('Не удалось отправить заказ.');
+      }
     }
 
     loadProducts();
