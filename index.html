@@ -69,6 +69,13 @@
       <span class="cart-count" id="cart-count" style="display:none;">0</span>
     </button>
   </header>
+  <!-- Поле для поиска -->
+  <input
+    type="text"
+    id="search-bar"
+    placeholder="Поиск открыток по названию..."
+    oninput="filterProducts()"
+  />
   <main id="product-list"></main>
 
   <div id="cart-modal" onclick="hideCart(event)">
