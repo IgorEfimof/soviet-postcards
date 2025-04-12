@@ -6,7 +6,28 @@
   <title>Советские открытки</title>
   <style>
     body { font-family: sans-serif; margin: 0; padding: 0; background: #f8f8f8; }
-    header { background: #800000; color: white; padding: 1em; text-align: center; position: relative; }
+    header { background: #800000; color: white; padding: 1em; text-align: center; position: relative; display: flex; align-items: center; justify-content: space-between; }
+    .search-container {
+      display: flex;
+      align-items: center;
+      position: absolute;
+      left: 1em;
+    }
+    .search-container input {
+      padding: 0.4em 0.8em;
+      font-size: 1em;
+      border: none;
+      border-radius: 4px;
+      outline: none;
+    }
+    .search-container button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.4em;
+      color: white;
+      margin-left: 0.5em;
+    }
     .cart-icon-button {
       position: absolute;
       right: 1em;
@@ -63,24 +84,30 @@
 </head>
 <body>
   <header>
+    <div class="search-container">
+      <input type="text" id="search-input" placeholder="Поиск по названию..." oninput="filterProducts()" />
+      <button title="Поиск">
+        🔍
+      </button>
+    </div>
     <h1>Магазин советских открыток</h1>
     <button class="cart-icon-button" onclick="showCart()" title="Корзина">
       🛒
       <span class="cart-count" id="cart-count" style="display:none;">0</span>
     </button>
   </header>
-   <main id="product-list"></main>
+  <main id="product-list"></main>
 
   <div id="cart-modal" onclick="hideCart(event)">
     <div id="cart-content">
       <h2>Корзина</h2>
       <ul id="cart-items"></ul>
       <div id="cart-footer">
-  <p><strong>Итого: <span id="cart-total">0</span> руб.</strong></p>
-  <input type="text" id="user-name" placeholder="Ваше имя" style="margin-bottom: 10px; padding: 0.5em; width: 95%; border: 1px solid #ccc; border-radius: 4px;" />
-  <button onclick="clearCart()">Очистить корзину</button>
-  <button onclick="orderNow()">Оформить заказ</button>
-</div>
+        <p><strong>Итого: <span id="cart-total">0</span> руб.</strong></p>
+        <input type="text" id="user-name" placeholder="Ваше имя" style="margin-bottom: 10px; padding: 0.5em; width: 95%; border: 1px solid #ccc; border-radius: 4px;" />
+        <button onclick="clearCart()">Очистить корзину</button>
+        <button onclick="orderNow()">Оформить заказ</button>
+      </div>
     </div>
   </div>
 
@@ -108,6 +135,15 @@
         container.appendChild(card);
       });
       updateCartCount();
+    }
+
+    function filterProducts() {
+      const query = document.getElementById('search-input').value.toLowerCase();
+      const products = document.querySelectorAll('.card');
+      products.forEach(card => {
+        const title = card.querySelector('h3').textContent.toLowerCase();
+        card.style.display = title.includes(query) ? 'block' : 'none';
+      });
     }
 
     function addToCart(name, price, image) {
@@ -177,56 +213,54 @@
     }
 
     async function orderNow() {
-  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-  if (cart.length === 0) {
-    alert('Корзина пуста');
-    return;
-  }
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      if (cart.length === 0) {
+        alert('Корзина пуста');
+        return;
+      }
 
-  const userName = document.getElementById('user-name').value.trim();
-  if (!userName) {
-    alert('Пожалуйста, укажите ваше имя.');
-    return;
-  }
+      const userName = document.getElementById('user-name').value.trim();
+      if (!userName) {
+        alert('Пожалуйста, укажите ваше имя.');
+        return;
+      }
 
-  const botToken = '7549512928:AAG4ChQzTDH9c5zzo2D1KofIKtekwqNM4bg';
-  const chatId = '5059431264';
-  const baseImgUrl = 'https://igorefimof.github.io/soviet-postcards/img/';
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
+      const botToken = '7549512928:AAG4ChQzTDH9c5zzo2D1KofIKtekwqNM4bg';
+      const chatId = '5059431264';
+      const baseImgUrl = 'https://igorefimof.github.io/soviet-postcards/img/';
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
 
-  // Отправляем каждое фото товара отдельно с подписью
-  for (const item of cart) {
-    const imageUrl = baseImgUrl + item.image;
-    const caption = `${item.name} — ${item.price} руб.`;
+      for (const item of cart) {
+        const imageUrl = baseImgUrl + item.image;
+        const caption = `${item.name} — ${item.price} руб.`;
 
-    await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        photo: imageUrl,
-        caption: caption,
-        parse_mode: 'HTML'
-      })
-    });
-  }
+        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            photo: imageUrl,
+            caption: caption,
+            parse_mode: 'HTML'
+          })
+        });
+      }
 
-  // Отправляем финальное сообщение с именем пользователя и общей суммой
-  const summaryMessage = `🛒 Новый заказ от ${userName}!\nТоваров: ${cart.length}\nИтого: ${total} руб.`;
+      const summaryMessage = `🛒 Новый заказ от ${userName}!\nТоваров: ${cart.length}\nИтого: ${total} руб.`;
 
-  await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: summaryMessage,
-      parse_mode: 'HTML'
-    })
-  });
+      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: summaryMessage,
+          parse_mode: 'HTML'
+        })
+      });
 
-  alert('Ваш заказ успешно отправлен!');
-  clearCart();
-}
+      alert('Ваш заказ успешно отправлен!');
+      clearCart();
+    }
 
     loadProducts();
   </script>
