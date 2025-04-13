@@ -9,7 +9,7 @@
     header { 
       background: #800000; 
       color: white; 
-      padding: 1em 1em 2.5em; /* Увеличил нижний отступ */
+      padding: 1em 1em 2.5em; 
       text-align: center; 
       position: relative; 
     }
@@ -100,22 +100,6 @@
     .card button { margin-top: 0.5em; background: #800000; color: white; border: none; padding: 0.5em; cursor: pointer; border-radius: 4px; width: 100%; }
     .card button:hover { background: #a00000; }
 
-    #cart-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 10; }
-    #cart-content { background: white; padding: 2em; border-radius: 16px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: fadeIn 0.3s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-
-    #cart-content h2 { margin-top: 0; font-size: 1.5em; text-align: center; color: #800000; }
-    #cart-content ul { padding-left: 0; list-style: none; margin: 1em 0; }
-    #cart-content li { margin-bottom: 0.8em; background: #fafafa; padding: 0.8em 1em; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); gap: 0.5em; }
-    .cart-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
-    .cart-info { flex: 1; }
-    #cart-content .remove { background: none; color: #a00000; border: none; cursor: pointer; font-size: 1.2em; }
-
-    #cart-footer { margin-top: 1em; text-align: center; }
-    #cart-footer p { font-size: 1.2em; margin-bottom: 1em; }
-    #cart-content button { background: #800000; color: white; padding: 0.6em 1.2em; border: none; cursor: pointer; border-radius: 6px; font-size: 1em; transition: 0.2s; }
-    #cart-content button:hover { background: #a00000; }
-
     footer { background: #eee; text-align: center; padding: 1em; font-size: 0.9em; color: #333; margin-top: 3em; }
     footer a { color: #800000; text-decoration: none; margin-left: 0.5em; }
   </style>
@@ -138,69 +122,20 @@
     <aside>
       <h3>Разделы</h3>
       <ul>
-        <li><a href="#">Книги</a></li>
-        <li><a href="#">Марки</a></li>
-        <li><a href="#">Новый год</a></li>
-        <li><a href="#">Май</a></li>
-        <li><a href="#">Март</a></li>
-        <li><a href="#">Соцреализм</a></li>
-        <li><a href="#">День рождения</a></li>
-        <li><a href="#">Флора и фауна</a></li>
-        <li><a href="#">Цветы</a></li>
-        <li><a href="#">Артисты</a></li>
-        <li><a href="#">Февраль</a></li>
-        <li><a href="#">Октябрь</a></li>
-        <li><a href="#">Современные</a></li>
-        <li><a href="#">Транспорт</a></li>
-        <li><a href="#">Живопись</a></li>
-        <li><a href="#">Города</a></li>
+        <li><a href="category.html?category=Книги">Книги</a></li>
+        <li><a href="category.html?category=Марки">Марки</a></li>
+        <li><a href="category.html?category=Новый год">Новый год</a></li>
+        <li><a href="category.html?category=Соцреализм">Соцреализм</a></li>
+        <li><a href="category.html?category=Живопись">Живопись</a></li>
       </ul>
     </aside>
     <main id="product-list"></main>
   </div>
 
-  <div id="cart-modal" onclick="hideCart(event)">
-    <div id="cart-content">
-      <h2>Корзина</h2>
-      <ul id="cart-items"></ul>
-      <div id="cart-footer">
-        <p><strong>Итого: <span id="cart-total">0</span> руб.</strong></p>
-        <input type="text" id="user-name" placeholder="Ваше имя" style="margin-bottom: 10px; padding: 0.5em; width: 95%; border: 1px solid #ccc; border-radius: 4px;" />
-        <button onclick="clearCart()">Очистить корзину</button>
-        <button onclick="orderNow()">Оформить заказ</button>
-      </div>
-    </div>
-  </div>
-
   <footer>
-    © 2024 СОВЕТСКИЕ ОТКРЫТКИ<br>
+    © 2024 Советские Открытки<br>
     Все права защищены<br>
     Написать в <a href="https://t.me/IgEfR" target="_blank">Telegram</a>
   </footer>
-
-  <script>
-    async function loadProducts() {
-      const response = await fetch('data/products.json');
-      const products = await response.json();
-      const container = document.getElementById('product-list');
-      const latestProducts = products.slice(-9).reverse(); // Отображаем последние 9 товаров
-      latestProducts.forEach(product => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <img src="img/${product.image}" alt="${product.name}" />
-          <h3>${product.name}</h3>
-          <p>${product.description}</p>
-          <p><strong>${product.price} руб.</strong></p>
-          <button onclick="addToCart('${product.name}', ${product.price}, '${product.image}')">В корзину</button>
-        `;
-        container.appendChild(card);
-      });
-      updateCartCount();
-    }
-
-    // Остальной код остается без изменений
-    loadProducts();
-  </script>
 </body>
-</html> 
+</html>
