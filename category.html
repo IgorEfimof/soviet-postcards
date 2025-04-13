@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Категория товаров</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 0; background: #f8f8f8; }
+    header { background: #800000; color: white; padding: 1em; text-align: center; }
+    main { padding: 2em; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1em; }
+    .card { background: white; padding: 1em; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.15); transform: translateY(-2px); }
+    .card img { max-width: 100%; border-radius: 4px; }
+    .card h3 { margin: 0.5em 0 0.2em; }
+    .card p { margin: 0.2em 0; font-size: 0.9em; }
+    .card button { margin-top: 0.5em; background: #800000; color: white; border: none; padding: 0.5em; cursor: pointer; border-radius: 4px; width: 100%; }
+    .card button:hover { background: #a00000; }
+    footer { background: #eee; text-align: center; padding: 1em; font-size: 0.9em; color: #333; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Товары категории: <span id="category-name"></span></h1>
+  </header>
+  <main id="product-list"></main>
+  <footer>
+    © 2024 Советские Открытки<br>
+    Все права защищены<br>
+    Написать в <a href="https://t.me/IgEfR" target="_blank">Telegram</a>
+  </footer>
+  <script>
+    async function loadCategoryProducts() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.get('category');
+      document.getElementById('category-name').textContent = category;
+
+      const response = await fetch('data/products.json');
+      const products = await response.json();
+      const container = document.getElementById('product-list');
+
+      const filteredProducts = products.filter(product => product.name === category);
+      filteredProducts.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="img/${product.image}" alt="${product.name}" />
+          <h3>${product.name}</h3>
+          <p>${product.description}</p>
+          <p><strong>${product.price} руб.</strong></p>
+          <button>Добавить в корзину</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    loadCategoryProducts();
+  </script>
+</body>
+</html>
