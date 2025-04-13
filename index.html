@@ -137,5 +137,29 @@
     Все права защищены<br>
     Написать в <a href="https://t.me/IgEfR" target="_blank">Telegram</a>
   </footer>
+  <script>
+    async function loadProducts() {
+      const response = await fetch('data/products.json'); // Загружаем JSON с товарами
+      const products = await response.json(); // Парсим данные из JSON
+      const container = document.getElementById('product-list'); // Контейнер для товаров
+
+      // Отображаем последние 9 товаров
+      const latestProducts = products.slice(-9).reverse(); // Берем последние 9 и переворачиваем порядок
+      latestProducts.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="img/${product.image}" alt="${product.name}" />
+          <h3>${product.name}</h3>
+          <p>${product.description}</p>
+          <p><strong>${product.price} руб.</strong></p>
+          <button onclick="addToCart('${product.name}', ${product.price}, '${product.image}')">В корзину</button>
+        `;
+        container.appendChild(card); // Добавляем карточку в контейнер
+      });
+    }
+
+    loadProducts(); // Загружаем товары при загрузке страницы
+  </script>
 </body>
 </html>
