@@ -1,12 +1,9 @@
-// js/main.js
-
 document.addEventListener("DOMContentLoaded", () => {
   fetch("data/postcards.json")
     .then((res) => res.json())
     .then((data) => {
       const storedPostcards = JSON.parse(localStorage.getItem("postcards")) || [];
-      const allPostcards = [...data, ...storedPostcards];  // Объединяем данные из JSON и localStorage
-
+      const allPostcards = [...data, ...storedPostcards];
       renderPostcards(allPostcards);
       renderFilters(allPostcards);
     });
@@ -19,10 +16,15 @@ function renderPostcards(data) {
     const card = document.createElement("div");
     card.className = "card";
     card.setAttribute("data-category", item.category);
+
     card.innerHTML = `
       <img src="${item.image}" alt="${item.title}" />
-      <div class="card-title">${item.title}</div>
+      <div class="card-info">
+        <div class="card-title">${item.title}</div>
+        ${item.price ? `<div class="card-price">${item.price}</div>` : ""}
+      </div>
     `;
+
     card.addEventListener("click", () => openModal(item));
     gallery.appendChild(card);
   });
@@ -49,4 +51,3 @@ function renderFilters(data) {
     }
   });
 }
-
