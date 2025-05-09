@@ -17,13 +17,16 @@ function openModal(postcard) {
       </div>
       <p><strong>Категория:</strong> ${postcard.category}</p>
       ${postcard.description ? `<p>${postcard.description}</p>` : ""}
-      ${postcard.price ? `<p><strong>Цена:</strong> ${postcard.price}</p>` : ""}
+      ${postcard.price ? `<p><strong>Цена:</strong> ${postcard.price} ₽</p>` : ""}
+      ${postcard.price ? `<button class="buy-btn">Купить</button>` : ""}
     `;
 
+    // Закрытие модального окна
     modal.querySelector(".modal-close").onclick = () => {
       modal.style.display = "none";
     };
 
+    // Слайдер
     if (images.length > 1) {
       modal.querySelector(".prev").onclick = () => {
         currentIndex = (currentIndex - 1 + images.length) % images.length;
@@ -32,6 +35,15 @@ function openModal(postcard) {
       modal.querySelector(".next").onclick = () => {
         currentIndex = (currentIndex + 1) % images.length;
         renderContent(currentIndex);
+      };
+    }
+
+    // Обработка кнопки "Купить"
+    const buyBtn = modal.querySelector(".buy-btn");
+    if (buyBtn) {
+      buyBtn.onclick = () => {
+        addToCart(postcard);
+        modal.style.display = "none";
       };
     }
   }
@@ -45,6 +57,33 @@ function openModal(postcard) {
     }
   };
 }
+
+// Добавление товара в корзину
+function addToCart(postcard) {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const exists = cart.find((item) => item.id === postcard.id);
+
+  if (!exists) {
+    cart.push(postcard);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+  }
+}
+
+// Обновление счётчика корзины (если элемент есть на странице)
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const countElement = document.getElementById("cart-count");
+  if (countElement) {
+    countElement.textContent = cart.length;
+  }
+}
+
+// Инициализация при загрузке
+document.addEventListener("DOMContentLoaded", () => {
+  updateCartCount();
+});
+
 
 
 
