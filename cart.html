@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Корзина покупок</title>
+  <link rel="stylesheet" href="css/cart-style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Montserrat&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Ваша корзина</h1>
+    <nav>
+      <a href="index.html">Вернуться в галерею</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="cart-container" class="cart-container">
+      <h2>Товары в корзине</h2>
+      <ul id="cart" class="cart-list"></ul>
+
+      <div class="cart-summary">
+        <p><strong>Общая сумма:</strong> <span id="cart-total">0</span> ₽</p>
+        <p><strong>Количество товаров:</strong> <span id="cart-count">0</span></p>
+      </div>
+
+      <div class="cart-actions">
+        <button id="clear-cart" class="btn">Очистить корзину</button>
+        <button id="checkout" class="btn">Перейти к оформлению</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Советские открытки. Все права защищены.</p>
+  </footer>
+
+  <script src="js/cart.js"></script>
+</body>
+</html>
 
