@@ -24,8 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Отображаем все товары в корзине
     cart.forEach(item => {
       const li = document.createElement("li");
+      li.className = "cart-item";
       li.innerHTML = `
-        <img src="${item.image}" alt="${item.title}" />
+        <img src="${item.image}" alt="${item.title}" class="cart-item-image"/>
         <div class="item-info">
           <strong>${item.title}</strong>
           <p>Цена: ${item.price} ₽</p>
@@ -33,11 +34,11 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
       cartList.appendChild(li);
-      total += item.price;
+      total += parseFloat(item.price);
     });
 
     // Показать общую стоимость корзины
-    cartSummary.innerHTML = `Итого: ${total} ₽`;
+    cartSummary.innerHTML = `Итого: ${total.toFixed(2)} ₽`;
 
     // Если корзина пуста, показать сообщение
     if (cart.length === 0) {
@@ -87,3 +88,4 @@ document.addEventListener("DOMContentLoaded", () => {
   // Добавление товара в корзину через локальные события или вызовы (например, с главной страницы)
   window.addToCart = addToCart;
 });
+
