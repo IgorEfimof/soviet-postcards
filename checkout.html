@@ -4,55 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Оформление заказа</title>
+  <link rel="stylesheet" href="css/cart-style.css">
 </head>
 <body>
-  <h1>Оформление заказа</h1>
-  <form id="order-form">
-    <label for="name">Ваше имя:</label>
-    <input type="text" id="name" required><br>
-
-    <label for="email">Ваш email:</label>
-    <input type="email" id="email" required><br>
-
-    <label for="address">Адрес доставки:</label>
-    <input type="text" id="address" required><br>
-
-    <button type="submit">Подтвердить заказ</button>
-  </form>
-
-  <div id="order-summary"></div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const orderSummary = document.getElementById("order-summary");
-      const orderForm = document.getElementById("order-form");
-
-      // Отображение содержимого корзины
-      let total = 0;
-      cart.forEach(item => {
-        total += item.price * item.quantity;
-        orderSummary.innerHTML += `${item.title} x ${item.quantity} - ${item.price * item.quantity} ₽<br>`;
-      });
-      orderSummary.innerHTML += `<strong>Итого: ${total} ₽</strong><br><br>`;
-
-      // Оформление заказа
-      orderForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        
-        const name = document.getElementById("name").value;
-        const email = document.getElementById("email").value;
-        const address = document.getElementById("address").value;
-        
-        alert(`Спасибо за заказ, ${name}! Мы свяжемся с вами по email: ${email}.`);
-
-        // Здесь можно отправить данные на сервер для обработки заказа
-
-        // Очистить корзину
-        localStorage.removeItem("cart");
-        window.location.href = "thank-you.html"; // Перенаправить на страницу благодарности
-      });
-    });
-  </script>
+  <header>
+    <h1>Оформление заказа</h1>
+    <nav>
+      <a href="cart.html">Вернуться в корзину</a>
+    </nav>
+  </header>
+  <main>
+    <section id="checkout-container" class="cart-container">
+      <h2>Ваш заказ</h2>
+      <ul id="checkout-list" class="cart-list"></ul>
+      <div class="cart-summary">
+        <p><strong>Общая сумма:</strong> <span id="checkout-total">0</span> ₽</p>
+      </div>
+      <div class="cart-actions">
+        <button id="confirm-order" class="btn">Подтвердить заказ</button>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Совецкие открытки. Все права защищены.</p>
+  </footer>
+  <script src="js/checkout.js"></script>
 </body>
 </html>
