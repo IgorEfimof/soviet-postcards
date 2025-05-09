@@ -1,5 +1,3 @@
-// js/admin.js
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("postcard-form");
   const savedPostcards = document.getElementById("saved-postcards");
@@ -29,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("postcards", JSON.stringify(storedPostcards));
 
     renderSavedPostcards(storedPostcards);
-
     form.reset();
   });
 
@@ -50,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
       savedPostcards.appendChild(li);
     });
 
-    // Обработчик удаления
     document.querySelectorAll(".delete-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         const id = e.target.getAttribute("data-id");
@@ -64,4 +60,24 @@ document.addEventListener("DOMContentLoaded", () => {
   // Загружаем сохранённые открытки при старте
   const storedPostcards = JSON.parse(localStorage.getItem("postcards")) || [];
   renderSavedPostcards(storedPostcards);
+
+  // 🔄 Кнопка "Скопировать JSON"
+  const copyBtn = document.getElementById("copy-json-btn");
+  const jsonOutput = document.getElementById("json-output");
+
+  if (copyBtn && jsonOutput) {
+    copyBtn.addEventListener("click", () => {
+      const postcards = JSON.parse(localStorage.getItem("postcards")) || [];
+      const jsonString = JSON.stringify(postcards, null, 2);
+      jsonOutput.textContent = jsonString;
+      jsonOutput.style.display = "block";
+
+      // Копирование в буфер
+      navigator.clipboard.writeText(jsonString).then(() => {
+        copyBtn.textContent = "Скопировано!";
+        setTimeout(() => (copyBtn.textContent = "Скопировать JSON для products.json"), 2000);
+      });
+    });
+  }
 });
+
