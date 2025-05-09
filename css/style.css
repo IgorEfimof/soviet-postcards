@@ -1,48 +1,37 @@
-/* css/style.css */
-
+/* Основной стиль */
 body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
   margin: 0;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #f9f6f2;
+  padding: 20px;
   color: #333;
 }
 
-header {
-  background-color: #d94f4f;
-  color: white;
-  text-align: center;
-  padding: 2rem 1rem;
-}
-
 h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.5rem;
-  margin: 0;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-nav#filters {
-  margin-top: 1rem;
-}
-
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  padding: 2rem;
+/* Галерея */
+#gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
 .card {
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  background-color: #fff;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
   cursor: pointer;
-  transition: transform 0.2s ease-in-out;
+  width: 200px;
+  transition: transform 0.2s;
 }
 
 .card:hover {
-  transform: scale(1.02);
+  transform: translateY(-5px);
 }
 
 .card img {
@@ -51,60 +40,115 @@ nav#filters {
   display: block;
 }
 
-.card-title {
-  font-size: 1.1rem;
-  font-weight: bold;
-  padding: 0.5rem;
+.card-info {
+  padding: 10px;
 }
 
+.card-title {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.card-price {
+  color: #c10000;
+  font-weight: bold;
+}
+
+/* Фильтры */
+#filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#filters button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #cc0000;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background 0.3s;
+}
+
+#filters button:hover {
+  background-color: #a30000;
+}
+
+/* Модальное окно */
 .modal {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
-.modal.hidden {
-  display: none;
-}
-
 .modal-content {
-  background: white;
-  padding: 2rem;
-  max-width: 600px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
   width: 90%;
-  border-radius: 12px;
-  text-align: center;
   position: relative;
 }
 
 .modal-content img {
   max-width: 100%;
   height: auto;
-  margin-bottom: 1rem;
+  margin-bottom: 15px;
+}
+
+.modal-content h2 {
+  margin: 0 0 10px;
+}
+
+.modal-content p {
+  margin: 0 0 10px;
 }
 
 .modal-close {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  font-size: 1.5rem;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
   cursor: pointer;
-  color: #333;
+  color: #999;
 }
 
-footer {
-  text-align: center;
-  padding: 1rem;
-  background-color: #eee;
-  margin-top: 2rem;
-  font-size: 0.9rem;
-  color: #555;
+.modal-close:hover {
+  color: #000;
 }
+
+/* Адаптивность */
+@media (max-width: 600px) {
+  .card {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .modal-content {
+    padding: 15px;
+  }
+
+  #filters {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #filters button {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
 
