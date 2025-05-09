@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const title = document.getElementById("title").value;
     const description = document.getElementById("description").value;
     const category = document.getElementById("category").value;
+    const price = document.getElementById("price").value;
     const image = document.getElementById("image").value;
 
     const newPostcard = {
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
       title,
       description,
       category,
+      price,
       image
     };
 
@@ -36,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
       li.innerHTML = `
         <strong>${postcard.title}</strong><br />
         <em>${postcard.category}</em><br />
+        Цена: ${postcard.price} ₽<br />
         <img src="${postcard.image}" alt="${postcard.title}" style="width: 100px; height: auto;" />
         <button class="delete-btn" data-id="${postcard.id}">Удалить</button>
       `;
@@ -57,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const storedPostcards = JSON.parse(localStorage.getItem("postcards")) || [];
   renderSavedPostcards(storedPostcards);
 });
+
 
 
 
