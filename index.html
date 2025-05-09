@@ -13,14 +13,19 @@
     <nav id="filters"></nav>
   </header>
 
-  <main id="gallery" class="gallery"></main>
+  <main id="gallery" class="gallery">
+    <!-- Здесь будут карточки открыток, добавленные через JS -->
+  </main>
 
+  <!-- Модальное окно для подробного просмотра товара -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <span id="modal-close" class="modal-close">&times;</span>
       <img id="modal-img" src="" alt="Открытка" />
       <h2 id="modal-title"></h2>
       <p id="modal-description"></p>
+      <p><strong>Цена:</strong> <span id="modal-price"></span> ₽</p>
+      <button id="buy-btn" class="buy-btn">Купить</button>
     </div>
   </div>
 
@@ -32,3 +37,4 @@
   <script src="js/main.js"></script>
 </body>
 </html>
+
