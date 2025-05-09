@@ -1,15 +1,18 @@
 /* Основной стиль */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f7f7f7;
+  background-color: #f7f7f7 url('images/background-texture.jpg') repeat;
   margin: 0;
-  padding: 20px;
+  padding: 0;
   color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 30px;
+  margin: 30px 0;
 }
 
 /* Галерея */
@@ -18,6 +21,8 @@ h1 {
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
+  padding: 20px;
+  flex-grow: 1;
 }
 
 .card {
@@ -93,6 +98,12 @@ h1 {
   z-index: 1000;
   padding: 20px;
   overflow-y: auto;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal-content {
@@ -200,6 +211,17 @@ h1 {
     font-size: 1.2em;
   }
 }
+
+/* Футер */
+footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 0.9em;
+  margin-top: auto;
+}
+
 
 
 
