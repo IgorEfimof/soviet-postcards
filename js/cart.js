@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Функция для добавления товара в корзину
   function addToCart(item) {
+    console.log("Добавление товара в корзину:", item);
     const cart = getCart();
     const existingItem = cart.find(i => i.id === item.id);
 
