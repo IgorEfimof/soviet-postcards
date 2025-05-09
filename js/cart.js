@@ -45,6 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
       cartContainer.innerHTML = `<p>Ваша корзина пуста. Добавьте товары в корзину.</p>`;
     }
 
+    // Обновляем счетчик корзины на главной странице
+    updateCartCounter();
+
     // Добавление обработчиков для удаления товаров
     document.querySelectorAll(".remove-item-btn").forEach(button => {
       button.addEventListener("click", removeItemFromCart);
@@ -82,10 +85,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // Обработчик для кнопки очистки корзины
   emptyCartButton.addEventListener("click", emptyCart);
 
+  // Функция для обновления счетчика корзины в шапке
+  function updateCartCounter() {
+    const cart = getCart();
+    const cartCount = document.getElementById("cart-count");
+    cartCount.textContent = cart.length;
+  }
+
   // Инициализация корзины при загрузке страницы
   renderCart();
 
   // Добавление товара в корзину через локальные события или вызовы (например, с главной страницы)
   window.addToCart = addToCart;
 });
+
 
