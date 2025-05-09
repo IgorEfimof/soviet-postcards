@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartList = document.querySelector(".cart-list");
   const cartSummary = document.querySelector(".cart-summary");
   const emptyCartButton = document.getElementById("clear-cart");
+  const checkoutButton = document.getElementById("checkout"); // Кнопка "Перейти к оформлению"
 
   // Функция для получения данных корзины из localStorage
   function getCart() {
@@ -22,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Отображаем все товары в корзине
     cart.forEach(item => {
-      // Проверка: если quantity отсутствует, устанавливаем значение по умолчанию
       if (!item.quantity) {
         item.quantity = 1;
       }
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="item-info">
           <strong>${item.title}</strong>
           <p>Цена: ${item.price} ₽</p>
-          <p>Количество: ${item.quantity}</p> <!-- Отображение количества -->
+          <p>Количество: ${item.quantity}</p>
           <button class="remove-item-btn" data-id="${item.id}">Удалить</button>
         </div>
       `;
@@ -44,14 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Отображаем общую сумму
     cartSummary.innerHTML = `<p><strong>Итого:</strong> ${total.toFixed(2)} ₽</p>`;
 
-    // Если корзина пуста, отображаем сообщение
     if (cart.length === 0) {
       cartContainer.innerHTML = `<p>Ваша корзина пуста. Добавьте товары в корзину.</p>`;
     }
 
     updateCartCounter();
 
-    // Добавляем обработчики для кнопок удаления
     document.querySelectorAll(".remove-item-btn").forEach(button => {
       button.addEventListener("click", removeItemFromCart);
     });
@@ -63,10 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const existingItem = cart.find(i => i.id === item.id);
 
     if (existingItem) {
-      // Увеличиваем количество, если товар уже есть
       existingItem.quantity = (existingItem.quantity || 1) + 1;
     } else {
-      // Добавляем новый товар
       item.quantity = 1;
       cart.push(item);
     }
@@ -85,14 +81,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Функция для очистки всей корзины
   function emptyCart() {
-    saveCart([]); // Очищаем localStorage
-    renderCart(); // Обновляем интерфейс
+    saveCart([]);
+    renderCart();
   }
 
-  // Обработчик для кнопки очистки корзины
-  emptyCartButton?.addEventListener("click", emptyCart);
+  // Функция для перехода на страницу оформления
+  function proceedToCheckout() {
+    if (getCart().length === 0) {
+      alert("Ваша корзина пуста. Добавьте товары перед оформлением заказа.");
+      return;
+    }
+    // Переход на страницу оформления
+    window.location.href = "checkout.html";
+  }
 
-  // Функция для обновления счетчика товаров в шапке
+  // Обработчики событий
+  emptyCartButton?.addEventListener("click", emptyCart);
+  checkoutButton?.addEventListener("click", proceedToCheckout);
+
+  // Функция для обновления счетчика товаров
   function updateCartCounter() {
     const cart = getCart();
     const cartCount = document.getElementById("cart-count");
@@ -103,7 +110,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Инициализация корзины при загрузке страницы
   renderCart();
-
-  // Экспорт функции addToCart для использования в других модулях
-  window.addToCart = addToCart;
+  window.addToCart = addToCart; // Экспорт функции для других модулей
 });
