@@ -9,15 +9,14 @@
 </head>
 <body>
   <header>
-  <div class="header-container">
-    <h1>Коллекция советских открыток</h1>
-    <a href="cart.html" class="cart-link">
-      🛒 Корзина <span id="cart-count">0</span>
-    </a>
-  </div>
-  <nav id="filters"></nav>
-</header>
-
+    <div class="header-container">
+      <h1>Коллекция советских открыток</h1>
+      <a href="cart.html" class="cart-link">
+        🛒 Корзина <span id="cart-count">0</span>
+      </a>
+    </div>
+    <nav id="filters"></nav>
+  </header>
 
   <main id="gallery" class="gallery">
     <!-- Здесь будут карточки открыток, добавленные через JS -->
@@ -39,8 +38,8 @@
     <p>&copy; 2025 Советские открытки. Все права защищены.</p>
   </footer>
 
-  <script src="js/modal.js"></script>
+  <!-- Важно: сначала main.js, потом modal.js -->
   <script src="js/main.js"></script>
+  <script src="js/modal.js"></script>
 </body>
 </html>
-
