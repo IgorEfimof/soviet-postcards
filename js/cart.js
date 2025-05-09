@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Отображение товаров в корзине
     cart.forEach((item) => {
       if (!item.quantity) item.quantity = 1; // Установка значения по умолчанию
+      if (!item.price) item.price = 0; // Установка значения по умолчанию
       const li = document.createElement("li");
       li.className = "cart-item";
       li.innerHTML = `
