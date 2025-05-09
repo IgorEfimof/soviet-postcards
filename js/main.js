@@ -39,6 +39,7 @@ function renderPostcards(data) {
         price: parseFloat(buyButton.getAttribute("data-price")),
         image: buyButton.getAttribute("data-image"),
       };
+      console.log("Добавление товара через кнопку 'Купить':", newItem);
       addToCart(newItem);
     });
   });
