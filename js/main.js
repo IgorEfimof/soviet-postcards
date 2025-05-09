@@ -4,8 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("data/postcards.json")
     .then((res) => res.json())
     .then((data) => {
-      renderPostcards(data);
-      renderFilters(data);
+      const storedPostcards = JSON.parse(localStorage.getItem("postcards")) || [];
+      const allPostcards = [...data, ...storedPostcards];  // Объединяем данные из JSON и localStorage
+
+      renderPostcards(allPostcards);
+      renderFilters(allPostcards);
     });
 });
 
@@ -46,3 +49,4 @@ function renderFilters(data) {
     }
   });
 }
+
