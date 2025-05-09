@@ -1,7 +1,7 @@
 /* Основной стиль */
 body {
   font-family: 'Montserrat', sans-serif;
-  background-color: #f7f7f7 url('images/background-texture.jpg') repeat;
+  background: linear-gradient(135deg, #fdfcfb, #f3eac2); /* Теплый градиентный фон */
   margin: 0;
   padding: 0;
   color: #333;
@@ -250,7 +250,3 @@ footer {
   margin-top: auto;
   box-shadow: 0 -6px 12px rgba(0, 0, 0, 0.1);
 }
-
-
-
-
