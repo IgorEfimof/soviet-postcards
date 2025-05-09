@@ -1,3 +1,4 @@
+// Открытие модального окна
 function openModal(postcard) {
   const modal = document.getElementById("modal");
   const modalContent = document.querySelector(".modal-content");
@@ -64,7 +65,12 @@ function addToCart(postcard) {
   const exists = cart.find((item) => item.id === postcard.id);
 
   if (!exists) {
-    cart.push(postcard);
+    cart.push({
+      id: postcard.id,
+      title: postcard.title,
+      price: postcard.price,
+      image: postcard.image, // Добавляем изображение товара
+    });
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartCount();
   }
@@ -83,6 +89,7 @@ function updateCartCount() {
 document.addEventListener("DOMContentLoaded", () => {
   updateCartCount();
 });
+
 
 
 
