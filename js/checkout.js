@@ -10,7 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Получение данных корзины из localStorage
   function getCart() {
-    return JSON.parse(localStorage.getItem("cart")) || [];
+    try {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      console.log("Данные корзины:", cart);
+      return cart;
+    } catch (error) {
+      console.error("Ошибка при чтении данных из localStorage:", error);
+      return [];
+    }
   }
 
   // Отображение данных на странице оформления заказа
@@ -19,7 +26,15 @@ document.addEventListener("DOMContentLoaded", () => {
     checkoutList.innerHTML = "";
     let total = 0;
 
+    if (cart.length === 0) {
+      checkoutList.innerHTML = "<p>Ваша корзина пуста. Добавьте товары для оформления заказа.</p>";
+      return;
+    }
+
     cart.forEach((item) => {
+      // Проверяем наличие количества и задаем значение по умолчанию
+      if (!item.quantity) item.quantity = 1;
+
       const li = document.createElement("li");
       li.className = "cart-item";
       li.innerHTML = `
