@@ -21,7 +21,7 @@ function renderPostcards(data) {
       <img src="${item.image}" alt="${item.title}" />
       <div class="card-info">
         <div class="card-title">${item.title}</div>
-        ${item.price ? `<div class="card-price">${item.price}</div>` : ""}
+        ${item.price ? `<div class="card-price">${item.price} ₽</div>` : ""}
         <button class="buy-btn" data-id="${item.id}" data-title="${item.title}" data-price="${item.price}" data-image="${item.image}">Купить</button>
       </div>
     `;
@@ -33,7 +33,13 @@ function renderPostcards(data) {
     const buyButton = card.querySelector(".buy-btn");
     buyButton.addEventListener("click", (e) => {
       e.stopPropagation(); // Чтобы не открывалось модальное окно при клике на "Купить"
-      addToCart(e.target);
+      const newItem = {
+        id: buyButton.getAttribute("data-id"),
+        title: buyButton.getAttribute("data-title"),
+        price: parseFloat(buyButton.getAttribute("data-price")),
+        image: buyButton.getAttribute("data-image"),
+      };
+      addToCart(newItem);
     });
   });
 }
@@ -59,29 +65,3 @@ function renderFilters(data) {
     }
   });
 }
-
-// Функция для добавления товара в корзину
-function addToCart(button) {
-  const id = button.getAttribute("data-id");
-  const title = button.getAttribute("data-title");
-  const price = button.getAttribute("data-price");
-  const image = button.getAttribute("data-image");
-
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  // Проверяем, если товар уже в корзине
-  const existingProductIndex = cart.findIndex(item => item.id === id);
-
-  if (existingProductIndex === -1) {
-    cart.push({ id, title, price, image, quantity: 1 });
-  } else {
-    cart[existingProductIndex].quantity += 1;
-  }
-
-  // Сохраняем корзину в localStorage
-  localStorage.setItem("cart", JSON.stringify(cart));
-
-  // Показываем уведомление
-  alert("Товар добавлен в корзину!");
-}
-
