@@ -73,6 +73,11 @@ function addToCart(postcard) {
     });
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartCount();
+
+    // Обновляем отображение корзины после добавления товара
+    if (typeof renderCart === "function") {
+      renderCart();
+    }
   }
 }
 
