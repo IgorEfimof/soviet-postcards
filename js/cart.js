@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartContainer = document.querySelector(".cart-container");
   const cartList = document.querySelector(".cart-list");
   const cartSummary = document.querySelector(".cart-summary");
-  const emptyCartButton = document.getElementById("clear-cart"); // Исправлено: используем ID
+  const emptyCartButton = document.getElementById("clear-cart"); // Используем ID для кнопки очистки корзины
 
   // Функция для получения данных корзины из localStorage
   function getCart() {
@@ -38,7 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Отображаем общую сумму
-    cartSummary.innerHTML = `Итого: ${total.toFixed(2)} ₽`;
+    cartSummary.innerHTML = `
+      <p><strong>Итого:</strong> ${total.toFixed(2)} ₽</p>
+    `;
 
     // Если корзина пуста, отображаем сообщение
     if (cart.length === 0) {
