@@ -47,15 +47,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Обновление общей суммы и количества
-    cartSummary.innerHTML = `
-      <p><strong>Общая сумма:</strong> ${total.toFixed(2)} ₽</p>
-      <p><strong>Количество товаров:</strong> ${itemCount}</p>
-    `;
-
-    if (cart.length === 0) {
-      cartContainer.innerHTML = `
-        <p>Ваша корзина пуста. Добавьте товары в корзину.</p>
+    if (cart.length > 0) {
+      cartSummary.innerHTML = `
+        <p><strong>Общая сумма:</strong> ${total.toFixed(2)} ₽</p>
+        <p><strong>Количество товаров:</strong> ${itemCount}</p>
       `;
+    } else {
+      cartSummary.innerHTML = `<p>Ваша корзина пуста.</p>`;
     }
 
     updateCartCounter();
