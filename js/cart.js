@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="item-info">
           <strong>${item.title}</strong>
           <p>Цена: ${item.price} ₽</p>
+          <p>Количество: ${item.quantity}</p>
           <button class="remove-item-btn" data-id="${item.id}">Удалить</button>
         </div>
       `;
@@ -85,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Обработчик для кнопки очистки корзины
-  emptyCartButton.addEventListener("click", emptyCart);
+  emptyCartButton?.addEventListener("click", emptyCart);
 
   // Функция для обновления счетчика корзины в шапке
   function updateCartCounter() {
