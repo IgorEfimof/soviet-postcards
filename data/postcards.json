@@ -1,0 +1,32 @@
+[
+  {
+    "image": "postcard1.jpg",
+    "title": "Новый год 1970",
+    "category": "newyear"
+  },
+  {
+    "image": "postcard2.jpg",
+    "title": "8 марта 1965",
+    "category": "march8"
+  },
+  {
+    "image": "postcard3.jpg",
+    "title": "23 февраля 1973",
+    "category": "feb23"
+  },
+  {
+    "image": "postcard4.jpg",
+    "title": "День Победы 1945",
+    "category": "victory"
+  },
+  {
+    "image": "postcard5.jpg",
+    "title": "Дети с шарами",
+    "category": "children"
+  },
+  {
+    "image": "postcard6.jpg",
+    "title": "Пейзаж весной",
+    "category": "nature"
+  }
+]
