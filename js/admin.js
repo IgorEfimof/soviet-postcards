@@ -1,47 +1,62 @@
-const form = document.getElementById("postcard-form");
-const jsonOutput = document.getElementById("jsonOutput");
-const preview = document.getElementById("preview");
-const downloadJsonBtn = document.getElementById("downloadJson");
+// js/admin.js
 
-let postcards = [];
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("postcard-form");
+  const savedPostcards = document.getElementById("saved-postcards");
 
-// Обработка формы и добавление данных
-form.addEventListener("submit", e => {
-  e.preventDefault();
-  const title = document.getElementById("title").value.trim();
-  const category = document.getElementById("category").value;
-  const image = document.getElementById("image").value.trim();
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-  if (!title || !category || !image) return;
+    const title = document.getElementById("title").value;
+    const description = document.getElementById("description").value;
+    const category = document.getElementById("category").value;
+    const image = document.getElementById("image").value;
 
-  postcards.push({ title, category, image });
-  updateOutput();
-  form.reset();
-  preview.innerHTML = "";
-});
+    const newPostcard = {
+      id: Date.now(),
+      title,
+      description,
+      category,
+      image
+    };
 
-// Предпросмотр изображения
-document.getElementById("image").addEventListener("input", () => {
-  const filename = document.getElementById("image").value.trim();
-  if (filename) {
-    preview.innerHTML = `<img src="images/${filename}" alt="preview">`;
-  } else {
-    preview.innerHTML = "";
+    const storedPostcards = JSON.parse(localStorage.getItem("postcards")) || [];
+    storedPostcards.push(newPostcard);
+    localStorage.setItem("postcards", JSON.stringify(storedPostcards));
+
+    renderSavedPostcards(storedPostcards);
+
+    form.reset();
+  });
+
+  function renderSavedPostcards(postcards) {
+    savedPostcards.innerHTML = "";
+    postcards.forEach((postcard) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <strong>${postcard.title}</strong><br />
+        <em>${postcard.category}</em><br />
+        <img src="${postcard.image}" alt="${postcard.title}" style="width: 100px; height: auto;" />
+        <button class="delete-btn" data-id="${postcard.id}">Удалить</button>
+      `;
+      savedPostcards.appendChild(li);
+    });
+
+    // Обработчик удаления
+    document.querySelectorAll(".delete-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const id = e.target.getAttribute("data-id");
+        const updatedPostcards = postcards.filter((item) => item.id != id);
+        localStorage.setItem("postcards", JSON.stringify(updatedPostcards));
+        renderSavedPostcards(updatedPostcards);
+      });
+    });
   }
+
+  // Загружаем сохранённые открытки при старте
+  const storedPostcards = JSON.parse(localStorage.getItem("postcards")) || [];
+  renderSavedPostcards(storedPostcards);
 });
 
-// Обновление отображаемого JSON
-function updateOutput() {
-  jsonOutput.value = JSON.stringify(postcards, null, 2);
-}
-
-// Функция для скачивания JSON
-downloadJsonBtn.addEventListener("click", () => {
-  const blob = new Blob([jsonOutput.value], { type: "application/json" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "postcards.json";
-  link.click();
-});
 
 
