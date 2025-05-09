@@ -1,37 +1,23 @@
 [
   {
-    "image": "IMG_4415.jpeg",
-    "title": "Наилучшие пожелания в Новом году!",
-    "category": "newyear"
-  },
-    {
-    "title": "Наилучшие пожелания в Новом году!",
-    "category": "newyear",
-    "image": "IMG_4415.jpeg"
+    "id": 1,
+    "title": "С Новым годом!",
+    "description": "Советская новогодняя открытка с Дедом Морозом и ёлкой, 1978 год.",
+    "category": "Праздники",
+    "image": "images/new-year-1978.jpg"
   },
   {
-    "image": "postcard2.jpg",
-    "title": "8 марта 1965",
-    "category": "march8"
+    "id": 2,
+    "title": "День Победы",
+    "description": "Открытка ко Дню Победы, с орденом и георгиевской лентой, 1985 год.",
+    "category": "Праздники",
+    "image": "images/victory-day-1985.jpg"
   },
   {
-    "image": "postcard3.jpg",
-    "title": "23 февраля 1973",
-    "category": "feb23"
-  },
-  {
-    "image": "postcard4.jpg",
-    "title": "День Победы 1945",
-    "category": "victory"
-  },
-  {
-    "image": "postcard5.jpg",
-    "title": "Дети с шарами",
-    "category": "children"
-  },
-  {
-    "image": "postcard6.jpg",
-    "title": "Пейзаж весной",
-    "category": "nature"
+    "id": 3,
+    "title": "Весна и труд",
+    "description": "Открытка 1 мая — день весны и труда, с цветами и рабочими.",
+    "category": "Майские праздники",
+    "image": "images/may-1st.jpg"
   }
 ]
