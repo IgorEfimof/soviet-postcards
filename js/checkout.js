@@ -3,18 +3,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkoutTotal = document.getElementById("checkout-total");
   const confirmOrderButton = document.getElementById("confirm-order");
 
-  // Функция для получения данных корзины из localStorage
+  // Получение данных корзины из localStorage
   function getCart() {
     return JSON.parse(localStorage.getItem("cart")) || [];
   }
 
-  // Функция для отображения товаров на странице оформления заказа
+  // Отображение данных на странице оформления заказа
   function renderCheckout() {
     const cart = getCart();
     checkoutList.innerHTML = "";
     let total = 0;
 
-    cart.forEach(item => {
+    cart.forEach((item) => {
       const li = document.createElement("li");
       li.className = "cart-item";
       li.innerHTML = `
@@ -33,17 +33,17 @@ document.addEventListener("DOMContentLoaded", () => {
     checkoutTotal.textContent = total.toFixed(2);
   }
 
-  // Обработчик для кнопки "Подтвердить заказ"
+  // Подтверждение заказа
   confirmOrderButton.addEventListener("click", () => {
     if (getCart().length === 0) {
       alert("Ваш заказ пуст. Пожалуйста, добавьте товары в корзину.");
       return;
     }
     alert("Спасибо за ваш заказ! Мы свяжемся с вами для подтверждения.");
-    localStorage.removeItem("cart"); // Очищаем корзину после подтверждения заказа
-    window.location.href = "index.html"; // Возвращаемся на главную страницу
+    localStorage.removeItem("cart"); // Очистка корзины после подтверждения заказа
+    window.location.href = "index.html"; // Возврат на главную страницу
   });
 
-  // Инициализация страницы оформления заказа
+  // Инициализация
   renderCheckout();
 });
