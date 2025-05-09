@@ -8,6 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const clientPhoneInput = document.getElementById("client-phone");
   const clientEmailInput = document.getElementById("client-email");
 
+  // Telegram Bot Configuration
+  const TELEGRAM_BOT_TOKEN = "7549512928:AAG4ChQzTDH9c5zzo2D1KofIKtekwqNM4bg";
+  const TELEGRAM_CHAT_ID = "ВАШ_CHAT_ID"; // Укажите ID чата, куда отправлять сообщение
+
   // Получение данных корзины из localStorage
   function getCart() {
     try {
@@ -31,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     cart.forEach((item) => {
-      if (!item.quantity) item.quantity = 1; // Значение по умолчанию
+      if (!item.quantity) item.quantity = 1;
       const li = document.createElement("li");
       li.className = "cart-item";
       li.innerHTML = `
@@ -50,8 +54,30 @@ document.addEventListener("DOMContentLoaded", () => {
     checkoutTotal.textContent = total.toFixed(2);
   }
 
+  // Отправка данных в Telegram
+  async function sendToTelegram(message) {
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Ошибка при отправке данных в Telegram");
+      }
+    } catch (error) {
+      console.error("Ошибка отправки в Telegram:", error);
+    }
+  }
+
   // Подтверждение заказа
-  confirmOrderButton.addEventListener("click", (event) => {
+  confirmOrderButton.addEventListener("click", async (event) => {
     event.preventDefault();
 
     if (getCart().length === 0) {
@@ -70,9 +96,35 @@ document.addEventListener("DOMContentLoaded", () => {
       email: clientEmailInput.value,
     };
 
-    alert("Спасибо за ваш заказ! Мы свяжемся с вами для подтверждения.");
+    const cart = getCart();
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    // Формируем сообщение для Telegram
+    const message = `
+      Новый заказ:
+      Имя: ${clientData.name}
+      Телефон: ${clientData.phone}
+      Email: ${clientData.email}
+      Сумма заказа: ${total.toFixed(2)} ₽
+      Товары:
+      ${cart
+        .map(
+          (item) =>
+            `- ${item.title} (${item.quantity} шт. по ${item.price} ₽): ${(
+              item.price * item.quantity
+            ).toFixed(2)} ₽`
+        )
+        .join("\n")}
+    `;
+
+    // Отправляем сообщение в Telegram
+    await sendToTelegram(message);
+
+    // Очищаем корзину
     localStorage.removeItem("cart");
-    window.location.href = "index.html";
+
+    // Перенаправляем пользователя на страницу "thank-you.html"
+    window.location.href = "thank-you.html";
   });
 
   renderCheckout();
