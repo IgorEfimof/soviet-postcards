@@ -99,6 +99,7 @@ h1 {
   padding: 20px;
   overflow-y: auto;
   animation: fadeIn 0.3s ease-in-out;
+  box-sizing: border-box;
 }
 
 @keyframes fadeIn {
@@ -110,8 +111,10 @@ h1 {
   background-color: white;
   padding: 20px;
   border-radius: 10px;
-  max-width: 600px;
   width: 100%;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
   box-sizing: border-box;
   text-align: center;
