@@ -1,19 +1,28 @@
 // js/modal.js
 
-function openModal(item) {
+function openModal(postcard) {
   const modal = document.getElementById("modal");
-  document.getElementById("modal-img").src = item.image;
-  document.getElementById("modal-title").textContent = item.title;
-  document.getElementById("modal-description").textContent = item.description;
-  modal.classList.remove("hidden");
+  const modalContent = document.querySelector(".modal-content");
+
+  modalContent.innerHTML = `
+    <span class="modal-close">&times;</span>
+    <h2>${postcard.title}</h2>
+    <img src="${postcard.image}" alt="${postcard.title}" />
+    <p><strong>Категория:</strong> ${postcard.category}</p>
+    ${postcard.description ? `<p>${postcard.description}</p>` : ""}
+    ${postcard.price ? `<p><strong>Цена:</strong> ${postcard.price}</p>` : ""}
+  `;
+
+  modal.style.display = "flex";
+
+  document.querySelector(".modal-close").onclick = () => {
+    modal.style.display = "none";
+  };
+
+  window.onclick = (event) => {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  };
 }
 
-document.getElementById("modal-close").addEventListener("click", () => {
-  document.getElementById("modal").classList.add("hidden");
-});
-
-document.getElementById("modal").addEventListener("click", (e) => {
-  if (e.target.id === "modal") {
-    document.getElementById("modal").classList.add("hidden");
-  }
-});
