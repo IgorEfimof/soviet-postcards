@@ -107,27 +107,97 @@ footer {
   font-size: 0.9em;
 }
 
+/* Дополнительные стили для страницы оформления заказа */
+.checkout-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.checkout-container h2 {
+  text-align: center;
+  font-size: 1.8em;
+  margin-bottom: 20px;
+}
+
+.checkout-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.checkout-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.checkout-list li img {
+  max-width: 100px;
+  height: auto;
+  margin-right: 15px;
+}
+
+.checkout-list li .item-info {
+  flex-grow: 1;
+}
+
+.checkout-list li .item-info strong {
+  font-size: 1.2em;
+}
+
+.checkout-summary {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.checkout-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.checkout-actions .btn {
+  background-color: #cc0000;
+  color: white;
+  padding: 15px 30px;
+  font-size: 1.2em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.checkout-actions .btn:hover {
+  background-color: #a30000;
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
-  .cart-list li {
+  .cart-list li, .checkout-list li {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .cart-list li img {
+  .cart-list li img, .checkout-list li img {
     margin-bottom: 10px;
   }
 
-  .cart-summary {
+  .cart-summary, .checkout-summary {
     text-align: left;
   }
 
-  .cart-actions {
+  .cart-actions, .checkout-actions {
     flex-direction: column;
     align-items: center;
   }
 
-  .cart-actions .btn {
+  .cart-actions .btn, .checkout-actions .btn {
     width: 100%;
     margin-bottom: 10px;
   }
