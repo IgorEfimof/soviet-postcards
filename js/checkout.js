@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Telegram Bot Configuration
   const TELEGRAM_BOT_TOKEN = "7549512928:AAG4ChQzTDH9c5zzo2D1KofIKtekwqNM4bg";
-  const TELEGRAM_CHAT_ID = "ВАШ_CHAT_ID"; // Укажите ID чата, куда отправлять сообщение
+  const TELEGRAM_CHAT_ID = "5059431264"; // Ваш ID чата
 
   // Получение данных корзины из localStorage
   function getCart() {
