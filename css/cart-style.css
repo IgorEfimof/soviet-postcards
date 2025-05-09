@@ -177,6 +177,41 @@ footer {
   background-color: #a30000;
 }
 
+/* Стили для формы обратной связи */
+.contact-form {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.contact-form h3 {
+  margin-bottom: 15px;
+  font-size: 1.4em;
+}
+
+.contact-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.contact-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+.contact-form input:focus {
+  border-color: #cc0000;
+  outline: none;
+  box-shadow: 0 0 5px rgba(204, 0, 0, 0.5);
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
   .cart-list li, .checkout-list li {
