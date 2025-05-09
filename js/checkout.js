@@ -54,8 +54,8 @@ document.addEventListener("DOMContentLoaded", () => {
     checkoutTotal.textContent = total.toFixed(2);
   }
 
-  // Отправка данных в Telegram
-  async function sendToTelegram(message) {
+  // Отправка текста в Telegram
+  async function sendTextToTelegram(message) {
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
     try {
       const response = await fetch(url, {
@@ -69,10 +69,33 @@ document.addEventListener("DOMContentLoaded", () => {
         }),
       });
       if (!response.ok) {
-        throw new Error("Ошибка при отправке данных в Telegram");
+        throw new Error("Ошибка при отправке текста в Telegram");
       }
     } catch (error) {
-      console.error("Ошибка отправки в Telegram:", error);
+      console.error("Ошибка отправки текста в Telegram:", error);
+    }
+  }
+
+  // Отправка фото в Telegram
+  async function sendPhotoToTelegram(photoUrl, caption) {
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          photo: photoUrl,
+          caption: caption,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Ошибка при отправке фото в Telegram");
+      }
+    } catch (error) {
+      console.error("Ошибка отправки фото в Telegram:", error);
     }
   }
 
@@ -118,7 +141,13 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     // Отправляем сообщение в Telegram
-    await sendToTelegram(message);
+    await sendTextToTelegram(message);
+
+    // Отправляем фото товаров в Telegram
+    for (const item of cart) {
+      const caption = `${item.title}\nЦена: ${item.price} ₽\nКоличество: ${item.quantity}\nСумма: ${(item.price * item.quantity).toFixed(2)} ₽`;
+      await sendPhotoToTelegram(item.image, caption);
+    }
 
     // Очищаем корзину
     localStorage.removeItem("cart");
