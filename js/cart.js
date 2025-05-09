@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="item-info">
           <strong>${item.title}</strong>
           <p>Цена: ${item.price} ₽</p>
-          <p>Количество: ${item.quantity}</p>
+          <p>Количество: ${item.quantity}</p> <!-- Отображение количества -->
           <button class="remove-item-btn" data-id="${item.id}">Удалить</button>
         </div>
       `;
@@ -38,9 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Отображаем общую сумму
-    cartSummary.innerHTML = `
-      <p><strong>Итого:</strong> ${total.toFixed(2)} ₽</p>
-    `;
+    cartSummary.innerHTML = `<p><strong>Итого:</strong> ${total.toFixed(2)} ₽</p>`;
 
     // Если корзина пуста, отображаем сообщение
     if (cart.length === 0) {
@@ -58,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Функция для добавления товара в корзину
   function addToCart(item) {
-    console.log("Добавление товара в корзину:", item);
     const cart = getCart();
     const existingItem = cart.find(i => i.id === item.id);
 
@@ -85,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Функция для очистки всей корзины
   function emptyCart() {
-    console.log("Корзина очищена.");
     saveCart([]); // Очищаем localStorage
     renderCart(); // Обновляем интерфейс
   }
@@ -108,4 +104,3 @@ document.addEventListener("DOMContentLoaded", () => {
   // Экспорт функции addToCart для использования в других модулях
   window.addToCart = addToCart;
 });
-
