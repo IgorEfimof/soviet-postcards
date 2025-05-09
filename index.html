@@ -10,12 +10,17 @@
 <body>
   <header>
     <div class="header-container">
-      <h1>Коллекция советских открыток</h1>
+      <h1 class="site-title">Коллекция советских открыток</h1>
       <a href="cart.html" class="cart-link">
         🛒 Корзина <span id="cart-count">0</span>
       </a>
     </div>
-    <nav id="filters"></nav>
+    <nav id="filters" class="filters">
+      <button class="filter-btn active">Все</button>
+      <button class="filter-btn">Новый год</button>
+      <button class="filter-btn">Соцреализм</button>
+      <button class="filter-btn">Книги</button>
+    </nav>
   </header>
 
   <main id="gallery" class="gallery">
