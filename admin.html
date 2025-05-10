@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Админка — Добавление открыток</title>
-  <link rel="stylesheet" href="css/style.css" />
   <style>
+    /* Основные стили */
     body {
       font-family: sans-serif;
       padding: 1rem;
@@ -16,6 +16,8 @@
     h1 {
       text-align: center;
       margin-bottom: 1rem;
+      font-size: 24px;
+      color: #b71c1c;
     }
 
     form {
@@ -27,11 +29,12 @@
       border-radius: 10px;
       max-width: 600px;
       margin: 0 auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     label {
       font-weight: bold;
+      font-size: 14px;
     }
 
     input, textarea {
@@ -40,6 +43,11 @@
       border: 1px solid #ccc;
       border-radius: 5px;
       width: 100%;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: none;
     }
 
     button[type="submit"] {
@@ -48,15 +56,34 @@
       padding: 10px;
       border: none;
       border-radius: 5px;
-      font-size: 1rem;
+      font-size: 16px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background-color 0.3s;
     }
 
     button[type="submit"]:hover {
       background-color: #a30000;
     }
 
+    /* Кнопка копирования JSON */
+    #copy-json-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    #copy-json-btn:hover {
+      background-color: #1565c0;
+    }
+
+    /* Список добавленных открыток */
     #saved-postcards {
       margin-top: 2rem;
       max-width: 800px;
@@ -68,10 +95,10 @@
 
     .postcard-item {
       background: white;
-      padding: 10px;
+      padding: 15px;
       margin-bottom: 1rem;
       border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .postcard-item img.preview {
@@ -89,8 +116,27 @@
       border-radius: 4px;
       cursor: pointer;
       margin-top: 5px;
+      transition: background-color 0.3s;
     }
 
+    .delete-btn:hover {
+      background-color: #666;
+    }
+
+    /* JSON блок */
+    #json-output {
+      white-space: pre-wrap;
+      background: #f0f0f0;
+      padding: 10px;
+      display: none;
+      margin-top: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #333;
+      overflow-x: auto;
+    }
+
+    /* Адаптивность */
     @media (max-width: 600px) {
       form {
         padding: 15px;
@@ -99,11 +145,22 @@
       .postcard-item img.preview {
         max-width: 100%;
       }
+
+      button[type="submit"], #copy-json-btn {
+        font-size: 14px;
+        padding: 8px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
 <body>
   <h1>Админка: Добавить открытку</h1>
+  
+  <!-- Форма добавления открыток -->
   <form id="postcard-form">
     <label for="title">Название:</label>
     <input type="text" id="title" name="title" required />
@@ -125,10 +182,14 @@
 
     <button type="submit">Добавить открытку</button>
   </form>
-<hr>
-<button id="copy-json-btn">Скопировать JSON для products.json</button>
-<pre id="json-output" style="white-space: pre-wrap; background: #f0f0f0; padding: 10px; display: none; margin-top: 10px; border-radius: 5px;"></pre>
 
+  <hr>
+
+  <!-- Кнопка копирования JSON -->
+  <button id="copy-json-btn">Скопировать JSON для products.json</button>
+  <pre id="json-output"></pre>
+
+  <!-- Список добавленных открыток -->
   <h2 style="text-align:center; margin-top:2rem;">Добавленные открытки (localStorage)</h2>
   <ul id="saved-postcards"></ul>
 
