@@ -161,6 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Перенаправляем пользователя на страницу "thank-you.html"
     window.location.href = "thank-you.html";
   });
+  
 
   renderCheckout();
 });
