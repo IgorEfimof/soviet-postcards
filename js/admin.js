@@ -209,5 +209,3 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error("Кнопка или элемент для отображения JSON не найдены!");
   }
 });
-
-
