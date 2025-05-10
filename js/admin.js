@@ -177,17 +177,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (copyBtn && jsonOutput) {
     copyBtn.addEventListener("click", () => {
-      const postcards = JSON.parse(localStorage.getItem("postcards")) || [];
-      const jsonString = JSON.stringify(postcards, null, 2);
-      jsonOutput.textContent = jsonString;
-      jsonOutput.style.display = "block";
+      try {
+        const postcards = JSON.parse(localStorage.getItem("postcards")) || [];
+        if (postcards.length === 0) {
+          alert("Нет данных для копирования! Добавьте открытки.");
+          return;
+        }
 
-      // Копирование в буфер
-      navigator.clipboard.writeText(jsonString).then(() => {
-        copyBtn.textContent = "Скопировано!";
-        setTimeout(() => (copyBtn.textContent = "Скопировать JSON для products.json"), 2000);
-      });
+        const jsonString = JSON.stringify(postcards, null, 2);
+
+        // Отображаем JSON на странице
+        jsonOutput.textContent = jsonString;
+        jsonOutput.style.display = "block";
+
+        // Копирование в буфер обмена
+        navigator.clipboard.writeText(jsonString)
+          .then(() => {
+            copyBtn.textContent = "Скопировано!";
+            setTimeout(() => (copyBtn.textContent = "Скопировать JSON для products.json"), 2000);
+          })
+          .catch((err) => {
+            console.error("Ошибка копирования в буфер обмена:", err);
+            alert("Не удалось скопировать JSON. Проверьте настройки браузера.");
+          });
+      } catch (error) {
+        console.error("Ошибка обработки JSON:", error);
+        alert("Ошибка при формировании JSON. Проверьте данные.");
+      }
     });
+  } else {
+    console.error("Кнопка или элемент для отображения JSON не найдены!");
   }
 });
 
