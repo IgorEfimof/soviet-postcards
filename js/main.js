@@ -45,6 +45,29 @@ function renderPostcards(data) {
   });
 }
 
+function addToCart(postcard) {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const exists = cart.find((item) => item.id === postcard.id);
+
+  if (!exists) {
+    cart.push({
+      id: postcard.id,
+      title: postcard.title,
+      price: postcard.price,
+      image: postcard.image,
+    });
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // Обновляем отображение корзины
+    if (typeof renderCart === "function") {
+      renderCart();
+    }
+
+    // Обновляем счётчик товаров
+    updateCartCount();
+  }
+}
+
 function renderFilters(data) {
   const filters = document.getElementById("filters");
   const categories = [...new Set(data.map((item) => item.category))];
