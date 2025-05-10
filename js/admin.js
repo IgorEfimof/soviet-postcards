@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartTotal = document.getElementById("cart-total");
 
   // Обработчик отправки формы для добавления новой открытки
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const title = document.getElementById("title").value;
@@ -31,9 +31,46 @@ document.addEventListener("DOMContentLoaded", () => {
     storedPostcards.push(newPostcard);
     localStorage.setItem("postcards", JSON.stringify(storedPostcards));
 
+    // Обновление файла products.json
+    await updateProductsJson(newPostcard);
+
     renderSavedPostcards(storedPostcards);
     form.reset();
   });
+
+  // Функция для обновления файла products.json
+  async function updateProductsJson(newPostcard) {
+    const endpoint = "/path/to/products.json"; // Укажите правильный путь на сервере
+
+    try {
+      // Получаем текущие данные из products.json
+      const response = await fetch(endpoint);
+      if (!response.ok) {
+        throw new Error("Ошибка загрузки products.json");
+      }
+      const products = await response.json();
+
+      // Добавляем новую открытку
+      products.push(newPostcard);
+
+      // Отправляем обновленные данные на сервер
+      const saveResponse = await fetch(endpoint, {
+        method: "POST", // Или другой метод, поддерживаемый сервером
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(products),
+      });
+
+      if (!saveResponse.ok) {
+        throw new Error("Ошибка сохранения products.json");
+      }
+
+      console.log("products.json успешно обновлен.");
+    } catch (error) {
+      console.error("Ошибка обновления products.json:", error);
+    }
+  }
 
   // Функция для отображения всех сохраненных открыток
   function renderSavedPostcards(postcards) {
