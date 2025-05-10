@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Отправка текста в Telegram
   async function sendTextToTelegram(message) {
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    console.log("Отправка текста в Telegram:", message); // Логирование сообщения
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -71,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) {
         throw new Error("Ошибка при отправке текста в Telegram");
       }
+      console.log("Текст успешно отправлен в Telegram.");
     } catch (error) {
       console.error("Ошибка отправки текста в Telegram:", error);
     }
@@ -79,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Отправка фото в Telegram
   async function sendPhotoToTelegram(photoUrl, caption) {
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+    console.log("Отправка фото:", photoUrl); // Логирование URL изображения
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -91,9 +94,11 @@ document.addEventListener("DOMContentLoaded", () => {
           caption: caption,
         }),
       });
+      const responseData = await response.json();
       if (!response.ok) {
-        throw new Error("Ошибка при отправке фото в Telegram");
+        throw new Error(`Ошибка при отправке фото: ${responseData.description}`);
       }
+      console.log("Фото успешно отправлено в Telegram:", responseData);
     } catch (error) {
       console.error("Ошибка отправки фото в Telegram:", error);
     }
@@ -146,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Отправляем фото товаров в Telegram
     for (const item of cart) {
       const caption = `${item.title}\nЦена: ${item.price} ₽\nКоличество: ${item.quantity}\nСумма: ${(item.price * item.quantity).toFixed(2)} ₽`;
+      console.log("Отправка фото для товара:", item); // Логирование данных товара
       await sendPhotoToTelegram(item.image, caption);
     }
 
