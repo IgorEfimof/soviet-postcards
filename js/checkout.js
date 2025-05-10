@@ -81,6 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Отправка фото в Telegram
   async function sendPhotoToTelegram(photoUrl, caption) {
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+
+    // Проверка, что URL изображения не пустой
+    if (!photoUrl || !photoUrl.startsWith("http")) {
+      console.error("Некорректный URL изображения:", photoUrl);
+      return;
+    }
+
     console.log("Отправка фото:", photoUrl); // Логирование URL изображения
     try {
       const response = await fetch(url, {
@@ -161,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Перенаправляем пользователя на страницу "thank-you.html"
     window.location.href = "thank-you.html";
   });
-  
 
   renderCheckout();
 });
