@@ -4,7 +4,61 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Оформление заказа</title>
-  <link rel="stylesheet" href="css/cart-style.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .contact-form label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .contact-form input {
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .contact-form input::placeholder {
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    .cart-actions {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .btn {
+      background-color: #d32f2f;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #b71c1c;
+    }
+
+    @media (max-width: 600px) {
+      .contact-form {
+        padding: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -39,7 +93,7 @@
     </section>
   </main>
   <footer>
-    <p>&copy; 2025 Совецкие открытки. Все права защищены.</p>
+    <p>&copy; 2025 Советские открытки. Все права защищены.</p>
   </footer>
   <script src="js/checkout.js"></script>
 </body>
