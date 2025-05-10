@@ -20,6 +20,19 @@
       <div class="cart-summary">
         <p><strong>Общая сумма:</strong> <span id="checkout-total">0</span> ₽</p>
       </div>
+
+      <form id="contact-form" class="contact-form">
+        <h3>Контактная информация</h3>
+        <label for="client-name">Имя:</label>
+        <input type="text" id="client-name" name="client-name" required placeholder="Введите ваше имя">
+
+        <label for="client-phone">Телефон:</label>
+        <input type="tel" id="client-phone" name="client-phone" required placeholder="Введите ваш номер телефона">
+
+        <label for="client-email">Email:</label>
+        <input type="email" id="client-email" name="client-email" required placeholder="Введите ваш email">
+      </form>
+
       <div class="cart-actions">
         <button id="confirm-order" class="btn">Подтвердить заказ</button>
       </div>
