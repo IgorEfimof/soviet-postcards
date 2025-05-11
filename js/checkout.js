@@ -59,18 +59,14 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: TELEGRAM_CHAT_ID,
           text: message,
           parse_mode: "HTML"
         }),
       });
-      if (!response.ok) {
-        throw new Error("Ошибка при отправке текста в Telegram");
-      }
+      if (!response.ok) throw new Error("Ошибка при отправке текста в Telegram");
     } catch (error) {
       console.error("Ошибка отправки текста в Telegram:", error);
     }
@@ -78,17 +74,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function sendPhotoToTelegram(photoUrl, caption) {
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
-
     if (!photoUrl || !photoUrl.startsWith("http")) {
+      console.warn("Пропущено изображение — путь некорректен:", photoUrl);
       return;
     }
 
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: TELEGRAM_CHAT_ID,
           photo: photoUrl,
@@ -96,9 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }),
       });
       const responseData = await response.json();
-      if (!response.ok) {
-        throw new Error(`Ошибка при отправке фото: ${responseData.description}`);
-      }
+      if (!response.ok) throw new Error(`Ошибка: ${responseData.description}`);
     } catch (error) {
       console.error("Ошибка отправки фото в Telegram:", error);
     }
