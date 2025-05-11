@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const clientPhoneInput = document.getElementById("client-phone");
   const clientEmailInput = document.getElementById("client-email");
 
-  // Telegram Bot Configuration
   const TELEGRAM_BOT_TOKEN = "7549512928:AAG4ChQzTDH9c5zzo2D1KofIKtekwqNM4bg";
   const TELEGRAM_CHAT_ID = "5059431264";
 
@@ -33,20 +32,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     cart.forEach((item) => {
-      if (!item.quantity) item.quantity = 1;
+      const price = parseFloat(item.price) || 0;
+      const quantity = parseInt(item.quantity) || 1;
+      const itemTotal = price * quantity;
+
       const li = document.createElement("li");
       li.className = "cart-item";
       li.innerHTML = `
         <img src="${item.image}" alt="${item.title}" class="cart-item-image"/>
         <div class="item-info">
           <strong>${item.title}</strong>
-          <p>Цена: ${item.price} ₽</p>
-          <p>Количество: ${item.quantity}</p>
-          <p>Сумма: ${(item.price * item.quantity).toFixed(2)} ₽</p>
+          <p>Цена: ${price} ₽</p>
+          <p>Количество: ${quantity}</p>
+          <p>Сумма: ${itemTotal.toFixed(2)} ₽</p>
         </div>
       `;
       checkoutList.appendChild(li);
-      total += item.price * item.quantity;
+      total += itemTotal;
     });
 
     checkoutTotal.textContent = total.toFixed(2);
@@ -57,18 +59,14 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: TELEGRAM_CHAT_ID,
           text: message,
+          parse_mode: "HTML"
         }),
       });
-      if (!response.ok) {
-        throw new Error("Ошибка при отправке текста в Telegram");
-      }
-      console.log("Текст успешно отправлен в Telegram.");
+      if (!response.ok) throw new Error("Ошибка при отправке текста в Telegram");
     } catch (error) {
       console.error("Ошибка отправки текста в Telegram:", error);
     }
@@ -76,18 +74,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function sendPhotoToTelegram(photoUrl, caption) {
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
-
     if (!photoUrl || !photoUrl.startsWith("http")) {
-      console.error("Некорректный URL изображения:", photoUrl);
+      console.warn("Пропущено изображение — путь некорректен:", photoUrl);
       return;
     }
 
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: TELEGRAM_CHAT_ID,
           photo: photoUrl,
@@ -95,10 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }),
       });
       const responseData = await response.json();
-      if (!response.ok) {
-        throw new Error(`Ошибка при отправке фото: ${responseData.description}`);
-      }
-      console.log("Фото успешно отправлено в Telegram:", responseData);
+      if (!response.ok) throw new Error(`Ошибка: ${responseData.description}`);
     } catch (error) {
       console.error("Ошибка отправки фото в Telegram:", error);
     }
@@ -125,7 +117,14 @@ document.addEventListener("DOMContentLoaded", () => {
       email: clientEmailInput.value.trim(),
     };
 
-    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    let total = 0;
+    const itemLines = cart.map((item) => {
+      const price = parseFloat(item.price) || 0;
+      const quantity = parseInt(item.quantity) || 1;
+      const sum = price * quantity;
+      total += sum;
+      return `- ${item.title} (${quantity} x ${price} ₽): ${sum.toFixed(2)} ₽`;
+    });
 
     const message = [
       "🛒 <b>Новый заказ</b>",
@@ -135,15 +134,16 @@ document.addEventListener("DOMContentLoaded", () => {
       `💰 Сумма заказа: ${total.toFixed(2)} ₽`,
       "",
       "📦 <b>Товары:</b>",
-      ...cart.map((item) =>
-        `- ${item.title} (${item.quantity} x ${item.price} ₽): ${(item.price * item.quantity).toFixed(2)} ₽`
-      )
+      ...itemLines
     ].join("\n");
 
     await sendTextToTelegram(message);
 
     for (const item of cart) {
-      const caption = `${item.title}\nЦена: ${item.price} ₽\nКоличество: ${item.quantity}\nСумма: ${(item.price * item.quantity).toFixed(2)} ₽`;
+      const price = parseFloat(item.price) || 0;
+      const quantity = parseInt(item.quantity) || 1;
+      const sum = price * quantity;
+      const caption = `${item.title}\nЦена: ${price} ₽\nКоличество: ${quantity}\nСумма: ${sum.toFixed(2)} ₽`;
       const absoluteImageUrl = item.image.startsWith("http")
         ? item.image
         : `${window.location.origin}/${item.image.replace(/^\.?\/*/, "")}`;
