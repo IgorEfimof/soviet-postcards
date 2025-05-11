@@ -10,9 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Telegram Bot Configuration
   const TELEGRAM_BOT_TOKEN = "7549512928:AAG4ChQzTDH9c5zzo2D1KofIKtekwqNM4bg";
-  const TELEGRAM_CHAT_ID = "5059431264"; // Ваш ID чата
+  const TELEGRAM_CHAT_ID = "5059431264";
 
-  // Получение данных корзины из localStorage
   function getCart() {
     try {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -23,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Отображение данных на странице оформления заказа
   function renderCheckout() {
     const cart = getCart();
     checkoutList.innerHTML = "";
@@ -54,10 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
     checkoutTotal.textContent = total.toFixed(2);
   }
 
-  // Отправка текста в Telegram
   async function sendTextToTelegram(message) {
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-    console.log("Отправка текста в Telegram:", message); // Логирование сообщения
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -78,17 +74,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Отправка фото в Telegram
   async function sendPhotoToTelegram(photoUrl, caption) {
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
 
-    // Проверка, что URL изображения не пустой
     if (!photoUrl || !photoUrl.startsWith("http")) {
       console.error("Некорректный URL изображения:", photoUrl);
       return;
     }
 
-    console.log("Отправка фото:", photoUrl); // Логирование URL изображения
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -111,11 +104,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Подтверждение заказа
   confirmOrderButton.addEventListener("click", async (event) => {
     event.preventDefault();
 
-    if (getCart().length === 0) {
+    const cart = getCart();
+
+    if (cart.length === 0) {
       alert("Ваш заказ пуст. Пожалуйста, добавьте товары в корзину.");
       return;
     }
@@ -126,46 +120,37 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const clientData = {
-      name: clientNameInput.value,
-      phone: clientPhoneInput.value,
-      email: clientEmailInput.value,
+      name: clientNameInput.value.trim(),
+      phone: clientPhoneInput.value.trim(),
+      email: clientEmailInput.value.trim(),
     };
 
-    const cart = getCart();
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-    // Формируем сообщение для Telegram
-    const message = `
-      Новый заказ:
-      Имя: ${clientData.name}
-      Телефон: ${clientData.phone}
-      Email: ${clientData.email}
-      Сумма заказа: ${total.toFixed(2)} ₽
-      Товары:
-      ${cart
-        .map(
-          (item) =>
-            `- ${item.title} (${item.quantity} шт. по ${item.price} ₽): ${(
-              item.price * item.quantity
-            ).toFixed(2)} ₽`
-        )
-        .join("\n")}
-    `;
+    const message = [
+      "🛒 <b>Новый заказ</b>",
+      `👤 Имя: ${clientData.name}`,
+      `📞 Телефон: ${clientData.phone}`,
+      `📧 Email: ${clientData.email}`,
+      `💰 Сумма заказа: ${total.toFixed(2)} ₽`,
+      "",
+      "📦 <b>Товары:</b>",
+      ...cart.map((item) =>
+        `- ${item.title} (${item.quantity} x ${item.price} ₽): ${(item.price * item.quantity).toFixed(2)} ₽`
+      )
+    ].join("\n");
 
-    // Отправляем сообщение в Telegram
     await sendTextToTelegram(message);
 
-    // Отправляем фото товаров в Telegram
     for (const item of cart) {
       const caption = `${item.title}\nЦена: ${item.price} ₽\nКоличество: ${item.quantity}\nСумма: ${(item.price * item.quantity).toFixed(2)} ₽`;
-      console.log("Отправка фото для товара:", item); // Логирование данных товара
-      await sendPhotoToTelegram(item.image, caption);
+      const absoluteImageUrl = item.image.startsWith("http")
+        ? item.image
+        : `${window.location.origin}/${item.image.replace(/^\.?\/*/, "")}`;
+      await sendPhotoToTelegram(absoluteImageUrl, caption);
     }
 
-    // Очищаем корзину
     localStorage.removeItem("cart");
-
-    // Перенаправляем пользователя на страницу "thank-you.html"
     window.location.href = "thank-you.html";
   });
 
