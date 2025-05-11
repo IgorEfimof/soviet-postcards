@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
   const checkoutList = document.getElementById("checkout-list");
   const checkoutTotal = document.getElementById("checkout-total");
@@ -38,15 +39,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const li = document.createElement("li");
       li.className = "cart-item";
-      li.innerHTML = `
-        <img src="${item.image}" alt="${item.title}" class="cart-item-image"/>
+      li.innerHTML = \`
+        <img src="\${item.image}" alt="\${item.title}" class="cart-item-image"/>
         <div class="item-info">
-          <strong>${item.title}</strong>
-          <p>Цена: ${price} ₽</p>
-          <p>Количество: ${quantity}</p>
-          <p>Сумма: ${itemTotal.toFixed(2)} ₽</p>
+          <strong>\${item.title}</strong>
+          <p>Цена: \${price} ₽</p>
+          <p>Количество: \${quantity}</p>
+          <p>Сумма: \${itemTotal.toFixed(2)} ₽</p>
         </div>
-      `;
+      \`;
       checkoutList.appendChild(li);
       total += itemTotal;
     });
@@ -55,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function sendTextToTelegram(message) {
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    const url = \`https://api.telegram.org/bot\${TELEGRAM_BOT_TOKEN}/sendMessage\`;
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -73,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function sendPhotoToTelegram(photoUrl, caption) {
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+    const url = \`https://api.telegram.org/bot\${TELEGRAM_BOT_TOKEN}/sendPhoto\`;
     if (!photoUrl || !photoUrl.startsWith("http")) {
       console.warn("Пропущено изображение — путь некорректен:", photoUrl);
       return;
@@ -90,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }),
       });
       const responseData = await response.json();
-      if (!response.ok) throw new Error(`Ошибка: ${responseData.description}`);
+      if (!response.ok) throw new Error(\`Ошибка: \${responseData.description}\`);
     } catch (error) {
       console.error("Ошибка отправки фото в Telegram:", error);
     }
@@ -123,15 +124,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const quantity = parseInt(item.quantity) || 1;
       const sum = price * quantity;
       total += sum;
-      return `- ${item.title} (${quantity} x ${price} ₽): ${sum.toFixed(2)} ₽`;
+      return \`- \${item.title} (\${quantity} x \${price} ₽): \${sum.toFixed(2)} ₽\`;
     });
 
     const message = [
       "🛒 <b>Новый заказ</b>",
-      `👤 Имя: ${clientData.name}`,
-      `📞 Телефон: ${clientData.phone}`,
-      `📧 Email: ${clientData.email}`,
-      `💰 Сумма заказа: ${total.toFixed(2)} ₽`,
+      \`👤 Имя: \${clientData.name}\`,
+      \`📞 Телефон: \${clientData.phone}\`,
+      \`📧 Email: \${clientData.email}\`,
+      \`💰 Сумма заказа: \${total.toFixed(2)} ₽\`,
       "",
       "📦 <b>Товары:</b>",
       ...itemLines
@@ -143,11 +144,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const price = parseFloat(item.price) || 0;
       const quantity = parseInt(item.quantity) || 1;
       const sum = price * quantity;
-      const caption = `${item.title}\nЦена: ${price} ₽\nКоличество: ${quantity}\nСумма: ${sum.toFixed(2)} ₽`;
-      const absoluteImageUrl = item.image.startsWith("http")
-        ? item.image
-        : `${window.location.origin}/${item.image.replace(/^\.?\/*/, "")}`;
-      await sendPhotoToTelegram(absoluteImageUrl, caption);
+      const caption = \`\${item.title}\nЦена: \${price} ₽\nКоличество: \${quantity}\nСумма: \${sum.toFixed(2)} ₽\`;
+
+      let absoluteImageUrl = "";
+      if (item.image && item.image.startsWith("http")) {
+        absoluteImageUrl = item.image;
+      } else if (item.image) {
+        absoluteImageUrl = \`\${window.location.origin}/\${item.image.replace(/^\.?\/*/, "")}\`;
+      }
+
+      console.log("📷 Отправка фото:", absoluteImageUrl);
+
+      if (absoluteImageUrl) {
+        await sendPhotoToTelegram(absoluteImageUrl, caption);
+      } else {
+        console.warn("❌ Не найден путь к изображению для:", item.title);
+      }
     }
 
     localStorage.removeItem("cart");
