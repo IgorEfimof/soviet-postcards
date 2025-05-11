@@ -2,10 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkoutList = document.getElementById("checkout-list");
   const checkoutTotal = document.getElementById("checkout-total");
   const confirmOrderButton = document.getElementById("confirm-order");
-  const checkoutDebug = document.createElement("div");
-  checkoutDebug.style.color = "red";
-  checkoutDebug.style.fontSize = "14px";
-  document.body.appendChild(checkoutDebug);
 
   const contactForm = document.getElementById("contact-form");
   const clientNameInput = document.getElementById("client-name");
@@ -20,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
       return cart;
     } catch (error) {
-      checkoutDebug.textContent = "❌ Ошибка при чтении корзины из localStorage.";
+      console.error("Ошибка при чтении данных из localStorage:", error);
       return [];
     }
   }
@@ -31,8 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let total = 0;
 
     if (cart.length === 0) {
-      checkoutList.innerHTML = "<p>❌ Ваша корзина пуста или повреждена. Добавьте товары заново.</p>";
-      checkoutDebug.textContent = "🛒 Корзина пуста.";
+      checkoutList.innerHTML = "<p>Ваша корзина пуста. Добавьте товары для оформления заказа.</p>";
       return;
     }
 
@@ -43,52 +38,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const li = document.createElement("li");
       li.className = "cart-item";
-      li.innerHTML = \`
-        <img src="\${item.image || '#'}" alt="\${item.title}" class="cart-item-image"/>
+      li.innerHTML = `
+        <img src="${item.image}" alt="${item.title}" class="cart-item-image"/>
         <div class="item-info">
-          <strong>\${item.title || 'Без названия'}</strong>
-          <p>Цена: \${price} ₽</p>
-          <p>Количество: \${quantity}</p>
-          <p>Сумма: \${itemTotal.toFixed(2)} ₽</p>
+          <strong>${item.title}</strong>
+          <p>Цена: ${price} ₽</p>
+          <p>Количество: ${quantity}</p>
+          <p>Сумма: ${itemTotal.toFixed(2)} ₽</p>
         </div>
-      \`;
+      `;
       checkoutList.appendChild(li);
       total += itemTotal;
     });
 
     checkoutTotal.textContent = total.toFixed(2);
-    checkoutDebug.textContent = "✅ Корзина загружена: " + cart.length + " товаров.";
   }
 
   async function sendTextToTelegram(message) {
-    const url = \`https://api.telegram.org/bot\${TELEGRAM_BOT_TOKEN}/sendMessage\`;
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           chat_id: TELEGRAM_CHAT_ID,
           text: message,
           parse_mode: "HTML"
         }),
       });
-      if (!response.ok) throw new Error("Ошибка отправки текста");
+      if (!response.ok) {
+        throw new Error("Ошибка при отправке текста в Telegram");
+      }
     } catch (error) {
-      checkoutDebug.textContent = "❌ Ошибка отправки текста в Telegram.";
+      console.error("Ошибка отправки текста в Telegram:", error);
     }
   }
 
   async function sendPhotoToTelegram(photoUrl, caption) {
-    const url = \`https://api.telegram.org/bot\${TELEGRAM_BOT_TOKEN}/sendPhoto\`;
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+
     if (!photoUrl || !photoUrl.startsWith("http")) {
-      checkoutDebug.textContent = "⚠️ Некорректный URL изображения.";
       return;
     }
 
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           chat_id: TELEGRAM_CHAT_ID,
           photo: photoUrl,
@@ -96,9 +96,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }),
       });
       const responseData = await response.json();
-      if (!response.ok) throw new Error(\`Ошибка: \${responseData.description}\`);
+      if (!response.ok) {
+        throw new Error(`Ошибка при отправке фото: ${responseData.description}`);
+      }
     } catch (error) {
-      checkoutDebug.textContent = "❌ Ошибка отправки фото в Telegram.";
+      console.error("Ошибка отправки фото в Telegram:", error);
     }
   }
 
@@ -106,14 +108,14 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
 
     const cart = getCart();
+
     if (cart.length === 0) {
-      alert("❌ Ваш заказ пуст.");
-      checkoutDebug.textContent = "❌ Корзина пуста при подтверждении.";
+      alert("Ваш заказ пуст. Пожалуйста, добавьте товары в корзину.");
       return;
     }
 
     if (!contactForm.checkValidity()) {
-      alert("❌ Пожалуйста, заполните все поля формы.");
+      alert("Пожалуйста, заполните все поля формы.");
       return;
     }
 
@@ -129,15 +131,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const quantity = parseInt(item.quantity) || 1;
       const sum = price * quantity;
       total += sum;
-      return \`- \${item.title || 'Без названия'} (\${quantity} x \${price} ₽): \${sum.toFixed(2)} ₽\`;
+      return `- ${item.title} (${quantity} x ${price} ₽): ${sum.toFixed(2)} ₽`;
     });
 
     const message = [
       "🛒 <b>Новый заказ</b>",
-      \`👤 Имя: \${clientData.name}\`,
-      \`📞 Телефон: \${clientData.phone}\`,
-      \`📧 Email: \${clientData.email}\`,
-      \`💰 Сумма заказа: \${total.toFixed(2)} ₽\`,
+      `👤 Имя: ${clientData.name}`,
+      `📞 Телефон: ${clientData.phone}`,
+      `📧 Email: ${clientData.email}`,
+      `💰 Сумма заказа: ${total.toFixed(2)} ₽`,
       "",
       "📦 <b>Товары:</b>",
       ...itemLines
@@ -149,18 +151,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const price = parseFloat(item.price) || 0;
       const quantity = parseInt(item.quantity) || 1;
       const sum = price * quantity;
-      const caption = \`\${item.title || 'Без названия'}\nЦена: \${price} ₽\nКоличество: \${quantity}\nСумма: \${sum.toFixed(2)} ₽\`;
-
-      let absoluteImageUrl = "";
-      if (item.image && item.image.startsWith("http")) {
-        absoluteImageUrl = item.image;
-      } else if (item.image) {
-        absoluteImageUrl = \`\${window.location.origin}/\${item.image.replace(/^\.?\/*/, "")}\`;
-      }
-
-      if (absoluteImageUrl) {
-        await sendPhotoToTelegram(absoluteImageUrl, caption);
-      }
+      const caption = `${item.title}\nЦена: ${price} ₽\nКоличество: ${quantity}\nСумма: ${sum.toFixed(2)} ₽`;
+      const absoluteImageUrl = item.image.startsWith("http")
+        ? item.image
+        : `${window.location.origin}/${item.image.replace(/^\.?\/*/, "")}`;
+      await sendPhotoToTelegram(absoluteImageUrl, caption);
     }
 
     localStorage.removeItem("cart");
