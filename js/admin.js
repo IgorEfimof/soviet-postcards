@@ -36,46 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
     storedPostcards.push(newPostcard);
     localStorage.setItem("postcards", JSON.stringify(storedPostcards));
 
-    // Обновление файла products.json
-    await updateProductsJson(newPostcard);
-
     renderSavedPostcards(storedPostcards);
     form.reset();
   });
-
-  // Функция для обновления файла products.json
-  async function updateProductsJson(newPostcard) {
-    const endpoint = "/path/to/products.json"; // Укажите правильный путь на сервере
-
-    try {
-      // Получаем текущие данные из products.json
-      const response = await fetch(endpoint);
-      if (!response.ok) {
-        throw new Error("Ошибка загрузки products.json");
-      }
-      const products = await response.json();
-
-      // Добавляем новую открытку
-      products.push(newPostcard);
-
-      // Отправляем обновленные данные на сервер
-      const saveResponse = await fetch(endpoint, {
-        method: "PUT", // Используем PUT для обновления файла
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(products),
-      });
-
-      if (!saveResponse.ok) {
-        throw new Error("Ошибка сохранения products.json");
-      }
-
-      console.log("products.json успешно обновлен.");
-    } catch (error) {
-      console.error("Ошибка обновления products.json:", error);
-    }
-  }
 
   // Функция для отображения всех сохраненных открыток
   function renderSavedPostcards(postcards) {
@@ -96,16 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
       savedPostcards.appendChild(li);
     });
 
-    // Обработчик добавления в корзину
-    document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const id = e.target.getAttribute("data-id");
-        const postcards = JSON.parse(localStorage.getItem("postcards")) || [];
-        const selectedPostcard = postcards.find((item) => item.id == id);
-        addToCart(selectedPostcard);
-      });
-    });
-
     // Обработчик удаления
     document.querySelectorAll(".delete-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
@@ -117,68 +70,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Функция для добавления товара в корзину
-  function addToCart(postcard) {
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingItemIndex = cartItems.findIndex((item) => item.id === postcard.id);
-
-    if (existingItemIndex > -1) {
-      cartItems[existingItemIndex].quantity += 1; // Увеличиваем количество
-    } else {
-      postcard.quantity = 1;
-      cartItems.push(postcard); // Добавляем товар в корзину
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-    updateCart();
-  }
-
-  // Функция для обновления отображения корзины
-  function updateCart() {
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    cart.innerHTML = "";
-    let total = 0;
-    cartItems.forEach((item) => {
-      total += item.price * item.quantity;
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <strong>${item.title}</strong> x${item.quantity} - ${item.price * item.quantity} ₽
-        <button class="remove-from-cart-btn" data-id="${item.id}">Удалить</button>
-      `;
-      cart.appendChild(li);
-    });
-
-    // Обновляем количество товаров в корзине и общую сумму
-    cartCount.textContent = cartItems.length;
-    cartTotal.textContent = total.toFixed(2);
-
-    // Обработчик удаления товара из корзины
-    document.querySelectorAll(".remove-from-cart-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const id = e.target.getAttribute("data-id");
-        removeFromCart(id);
-      });
-    });
-  }
-
-  // Функция для удаления товара из корзины
-  function removeFromCart(id) {
-    let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    cartItems = cartItems.filter((item) => item.id != id);
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-    updateCart();
-  }
-
   // Загружаем сохранённые открытки при старте
   const storedPostcards = JSON.parse(localStorage.getItem("postcards")) || [];
   renderSavedPostcards(storedPostcards);
 
-  // Загружаем корзину при старте
-  updateCart();
-
   // 🔄 Кнопка "Скопировать JSON"
   const copyBtn = document.getElementById("copy-json-btn");
   const jsonOutput = document.getElementById("json-output");
+
+  const fallbackCopyTextToClipboard = (text) => {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed"; // Избегаем прокрутки страницы
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      document.execCommand("copy");
+      alert("JSON скопирован в буфер обмена!");
+    } catch (err) {
+      console.error("Ошибка копирования:", err);
+      alert("Не удалось скопировать JSON.");
+    }
+
+    document.body.removeChild(textArea);
+  };
 
   if (copyBtn && jsonOutput) {
     copyBtn.addEventListener("click", () => {
@@ -196,17 +113,16 @@ document.addEventListener("DOMContentLoaded", () => {
         jsonOutput.style.display = "block";
 
         // Копирование в буфер обмена
-        navigator.clipboard.writeText(jsonString)
-          .then(() => {
-            copyBtn.textContent = "Скопировано!";
-            setTimeout(() => {
-              copyBtn.textContent = "Скопировать JSON для products.json";
-            }, 2000);
-          })
-          .catch((err) => {
-            console.error("Ошибка копирования в буфер обмена:", err);
-            alert("Не удалось скопировать JSON. Проверьте настройки браузера.");
+        if (!navigator.clipboard) {
+          fallbackCopyTextToClipboard(jsonString);
+        } else {
+          navigator.clipboard.writeText(jsonString).then(() => {
+            alert("JSON успешно скопирован!");
+          }, (err) => {
+            console.error("Ошибка копирования через clipboard:", err);
+            fallbackCopyTextToClipboard(jsonString);
           });
+        }
       } catch (error) {
         console.error("Ошибка обработки JSON:", error);
         alert("Ошибка при формировании JSON. Проверьте данные.");
