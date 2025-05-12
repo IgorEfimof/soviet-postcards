@@ -25,5 +25,14 @@
     "price": "4500 руб",
     "image": "images/IMG_4429.jpeg",
     "backImage": "images/IMG_4430.jpeg"
+  },
+  {
+    "id": 1747072835385,
+    "title": "Ярославские Портреты XVIII - XIX веков",
+    "description": "Ярославские Портреты XVIII - XIX веков, Изобразительное Искусство, Москва, 1986 год. Суперобложка",
+    "category": "Книги",
+    "price": 600 руб",
+    "image": "images/Photoroom_20250510_075524.jpeg",
+    "backImage": "images/Photoroom_20250510_075510.jpeg"
   }
 ]
